@@ -1,502 +1,583 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Nomina Nano — AI Agent Naming Service</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+<title>Nomina Nano — Name Your Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#080808;--bg2:#0f0f0f;--bg3:#141414;--bg4:#1a1a1a;
-  --border:#1e1e1e;--border2:#262626;
-  --text:#e0e0e0;--text-dim:#555;--text-mid:#888;
-  --green:#00ff87;--green-dim:rgba(0,255,135,0.07);--green-glow:rgba(0,255,135,0.15);
-  --yellow:#f5d442;--red:#ff4d6d;--blue:#4da6ff;
-  --mono:'DM Mono',monospace;--sans:'Syne',sans-serif;
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-::-webkit-scrollbar{width:3px;height:3px}
-::-webkit-scrollbar-thumb{background:var(--border2)}
 
-/* ── TICKER ── */
-.ticker{height:28px;overflow:hidden;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;position:fixed;top:0;left:0;right:0;z-index:201}
-.ticker-inner{display:flex;gap:0;animation:ticker 35s linear infinite;white-space:nowrap}
-@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.ticker-item{font-size:10px;color:var(--text-dim);letter-spacing:0.08em;padding:0 18px;border-right:1px solid var(--border);display:flex;align-items:center;gap:6px;height:28px;font-family:var(--mono)}
-.t-green{color:var(--green)}
-.t-yellow{color:var(--yellow)}
+/* ── BASE BRAND PALETTE ── */
+:root{
+–base-blue:#0000ff;
+–base-bg:#0a0b0d;      /* Gray 100 */
+–base-bg2:#32353d;     /* Gray 80 */
+–base-bg3:#1a1c22;
+–base-border:#32353d;  /* Gray 80 */
+–base-border2:#5b616e; /* Gray 60 */
+–base-white:#ffffff;   /* Gray 0 */
+–base-gray:#717886;    /* Gray 50 */
+–base-mid:#b1b7c3;     /* Gray 30 */
+–base-cerulean:#3c8aff;
+–base-green:#66c800;
+–base-lime:#b6f569;
+–base-yellow:#ffd12f;
+–base-red:#fc401f;
+–mono:‘DM Mono’,monospace;
+–display:‘Bebas Neue’,sans-serif;
+–body:‘Bricolage Grotesque’,sans-serif;
+}
+
+html{scroll-behavior:smooth;background:#0a0b0d}
+body{
+background:#0a0b0d;
+color:var(–base-white);
+font-family:var(–body);
+font-size:14px;
+line-height:1.5;
+min-height:100vh;
+-webkit-font-smoothing:antialiased;
+overflow-x:hidden;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(–base-border)}
 
 /* ── NAV ── */
-nav{position:fixed;top:28px;left:0;right:0;z-index:200;height:48px;border-bottom:1px solid var(--border);background:rgba(8,8,8,0.95);backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 20px;gap:16px}
-.nav-logo{display:inline-flex;align-items:baseline;gap:0;text-decoration:none;flex-shrink:0;white-space:nowrap}
-.nav-logo-main{font-family:var(--sans);font-weight:800;font-size:16px;color:var(--text);letter-spacing:-0.01em;line-height:1}
-.nav-logo-dot{font-family:var(--sans);font-weight:800;font-size:16px;color:var(--green);line-height:1;padding:0 1px}
-.nav-logo-sub{font-family:var(--sans);font-weight:800;font-size:16px;color:var(--text);letter-spacing:-0.01em;line-height:1}
-.nav-tag{font-size:9px;color:var(--text-dim);border:1px solid var(--border2);padding:2px 8px;letter-spacing:0.15em;font-family:var(--mono);flex-shrink:0;margin-right:auto}
-.nav-live{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text-dim);letter-spacing:0.15em;font-family:var(--mono);flex-shrink:0}
-.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 var(--green-glow)}50%{opacity:.6;box-shadow:0 0 0 4px transparent}}
-.nav-btns{display:flex;gap:6px}
-.nav-btn{font-family:var(--mono);font-size:11px;padding:5px 12px;cursor:pointer;border:1px solid;transition:all .2s;letter-spacing:0.05em}
-.nav-btn-agent{background:var(--green);color:#000;border-color:var(--green);font-weight:700}
-.nav-btn-agent:hover{background:#00e077}
-.nav-btn-human{background:transparent;color:var(--text-mid);border-color:var(--border2)}
-.nav-btn-human:hover{border-color:#444;color:var(--text)}
+nav{
+position:fixed;top:0;left:0;right:0;z-index:100;
+height:52px;border-bottom:1px solid var(–base-border);
+background:rgba(10,11,13,0.92);backdrop-filter:blur(20px);
+display:flex;align-items:center;padding:0 28px;gap:14px;
+}
+.logo{font-family:var(–display);font-size:24px;letter-spacing:0.04em;color:var(–base-white);text-decoration:none;line-height:1;flex-shrink:0}
+.logo em{color:var(–base-blue);font-style:normal}
+.logo-tag{font-family:var(–mono);font-size:9px;color:var(–base-gray);letter-spacing:0.2em;border:1px solid var(–base-border);padding:2px 8px;margin-right:auto;flex-shrink:0}
+.nav-btn{font-family:var(–mono);font-size:10px;letter-spacing:0.08em;padding:7px 16px;cursor:pointer;border:1px solid;transition:all .2s;flex-shrink:0}
+.nav-btn-agent{background:var(–base-blue);color:var(–base-white);border-color:var(–base-blue)}
+.nav-btn-agent:hover{background:#1a1aff}
+.nav-btn-human{background:transparent;color:var(–base-gray);border-color:var(–base-border)}
+.nav-btn-human:hover{border-color:var(–base-border2);color:var(–base-mid)}
 
-/* ── LAYOUT ── */
-.layout{display:grid;grid-template-columns:210px 1fr 250px;min-height:calc(100vh - 72px);margin-top:72px}
-@media(max-width:1100px){.layout{grid-template-columns:180px 1fr}}
-@media(max-width:768px){.layout{grid-template-columns:1fr}.col-right{display:none}}
+/* ── MANIFESTO HERO ── */
+.hero{
+padding:120px 28px 0;
+max-width:1000px;margin:0 auto;
+}
+.hero-eyebrow{
+font-family:var(–mono);font-size:10px;color:var(–base-gray);
+letter-spacing:0.3em;margin-bottom:28px;
+display:flex;align-items:center;gap:12px;
+}
+.eyebrow-line{height:1px;width:32px;background:var(–base-border2)}
 
-/* ── LEFT SIDEBAR ── */
-.col-left{border-right:1px solid var(--border);padding:0;position:sticky;top:72px;height:calc(100vh - 72px);overflow-y:auto;display:flex;flex-direction:column}
-.sidebar-section{padding:14px;border-bottom:1px solid var(--border)}
-.sidebar-label{font-size:9px;color:var(--text-dim);letter-spacing:0.3em;margin-bottom:10px;font-family:var(--mono)}
-.stat-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0}
-.stat-row-label{font-size:11px;color:var(--text-mid)}
-.stat-row-val{font-size:13px;color:var(--green);font-weight:500;font-family:var(--mono)}
-.sidebar-link{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:11px;color:var(--text-mid);text-decoration:none;cursor:pointer;transition:all .2s;border-left:2px solid transparent}
-.sidebar-link:hover,.sidebar-link.active{color:var(--text);background:var(--bg2);border-left-color:var(--green)}
-.sidebar-link .icon{font-size:13px;width:18px;text-align:center}
+.hero-h1{
+font-family:var(–display);
+font-size:clamp(72px,11vw,140px);
+line-height:0.92;letter-spacing:0.02em;
+margin-bottom:0;
+}
+.hero-h1 .line-dim{color:var(–base-border2)}
+.hero-h1 .line-blue{color:var(–base-blue)}
+.hero-h1 .line-white{color:var(–base-white)}
 
-/* ── MAIN FEED ── */
-.col-main{border-right:1px solid var(--border);display:flex;flex-direction:column}
-.feed-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:72px;background:var(--bg);z-index:10}
-.feed-title{font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:-0.01em}
-.feed-tabs{display:flex}
-.feed-tab{font-size:10px;letter-spacing:0.1em;padding:5px 12px;cursor:pointer;border:1px solid var(--border);color:var(--text-dim);background:transparent;transition:all .2s;font-family:var(--mono)}
-.feed-tab:first-child{border-right:none}
-.feed-tab.active{color:var(--green);border-color:var(--green-dim);background:var(--green-dim)}
+/* ── MANIFESTO TEXT ── */
+.manifesto{
+display:grid;grid-template-columns:1fr 1fr;
+gap:40px;padding:40px 28px 0;
+max-width:1000px;margin:0 auto;
+border-top:1px solid var(–base-border);
+margin-top:32px;
+}
+.manifesto-statement{
+font-size:clamp(15px,1.8vw,18px);
+color:var(–base-mid);
+line-height:1.75;
+font-weight:400;
+}
+.manifesto-statement strong{color:var(–base-white);font-weight:700}
+.manifesto-statement em{color:var(–base-blue);font-style:normal;font-weight:600}
+.manifesto-cta{display:flex;flex-direction:column;justify-content:center;gap:12px}
 
-/* ── HERO CARD ── */
-.hero-card{padding:24px 16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%)}
-.hero-eyebrow{font-size:9px;color:var(--text-dim);letter-spacing:0.25em;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-family:var(--mono)}
-.hero-eyebrow::before{content:'';width:16px;height:1px;background:var(--green)}
-.hero-h1{font-family:var(--sans);font-size:clamp(20px,3vw,30px);font-weight:800;line-height:1.2;letter-spacing:-0.02em;margin-bottom:10px}
-.hero-h1 em{color:var(--green);font-style:normal}
-.hero-sub{font-size:12px;color:var(--text-mid);line-height:1.8;margin-bottom:16px;max-width:520px;font-family:var(--mono)}
-.hero-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn-primary{background:var(--green);color:#000;border:none;font-family:var(--mono);font-size:11px;padding:9px 18px;cursor:pointer;font-weight:700;transition:all .2s;letter-spacing:0.08em}
-.btn-primary:hover{background:#00e077}
-.btn-secondary{background:transparent;color:var(--text-mid);border:1px solid var(--border2);font-family:var(--mono);font-size:11px;padding:9px 18px;cursor:pointer;transition:all .2s;letter-spacing:0.08em}
-.btn-secondary:hover{border-color:#444;color:var(--text)}
+/* ── COMPARE ── */
+.compare-wrap{
+padding:80px 28px;
+max-width:1000px;margin:0 auto;
+}
+.compare-label{
+font-family:var(–mono);font-size:9px;color:var(–base-gray);
+letter-spacing:0.3em;margin-bottom:24px;
+display:flex;align-items:center;gap:12px;
+}
+.compare-label::after{content:’’;flex:1;height:1px;background:var(–base-border)}
 
-/* ── NAMING FEED ITEMS ── */
-.naming-item{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:12px;transition:background .15s;cursor:default}
-.naming-item:hover{background:var(--bg2)}
-.naming-avatar{width:32px;height:32px;border-radius:4px;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.naming-body{flex:1;min-width:0}
-.naming-header{display:flex;align-items:baseline;gap:8px;margin-bottom:4px;flex-wrap:wrap}
-.naming-agent{font-size:12px;color:var(--text);font-weight:500;font-family:var(--mono)}
-.naming-time{font-size:10px;color:var(--text-dim);font-family:var(--mono)}
-.naming-action{font-size:11px;color:var(--text-mid);margin-bottom:6px}
-.naming-result{display:flex;gap:6px;flex-wrap:wrap}
-.name-tag{font-size:11px;color:var(--green);border:1px solid var(--green-dim);padding:2px 9px;background:var(--green-dim);letter-spacing:0.08em;font-family:var(--mono)}
-.naming-meta{display:flex;gap:12px;margin-top:6px}
-.naming-meta span{font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:4px;font-family:var(--mono)}
-.naming-meta .paid{color:var(--yellow)}
+.compare{display:grid;grid-template-columns:1fr 60px 1fr;align-items:stretch}
 
-/* ── TX ITEMS ── */
-.tx-item{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;transition:background .15s}
-.tx-item:hover{background:var(--bg2)}
-.tx-badge{font-size:9px;letter-spacing:0.15em;padding:2px 7px;border:1px solid;flex-shrink:0;font-family:var(--mono)}
-.tx-badge.success{color:var(--green);border-color:var(--green-dim)}
-.tx-badge.pending{color:var(--yellow);border-color:rgba(245,212,66,.25)}
-.tx-info{flex:1;min-width:0}
-.tx-hash{font-size:11px;color:var(--text-mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono)}
-.tx-amount{font-size:11px;color:var(--green);white-space:nowrap;font-family:var(--mono)}
-.tx-time{font-size:10px;color:var(--text-dim);white-space:nowrap;font-family:var(--mono)}
+/* BEFORE card */
+.card-before{
+border:1px solid var(–base-border);
+background:var(–base-bg3);
+overflow:hidden;
+opacity:.7;
+transition:opacity .3s;
+}
+.card-before:hover{opacity:1}
 
-/* ── RIGHT PANEL ── */
-.col-right{padding:0;position:sticky;top:72px;height:calc(100vh - 72px);overflow-y:auto;display:flex;flex-direction:column}
-.right-block{border-bottom:1px solid var(--border);padding:14px}
-.right-label{font-size:9px;color:var(--text-dim);letter-spacing:0.3em;margin-bottom:12px;font-family:var(--mono)}
-.agent-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
-.agent-row:last-child{border-bottom:none}
-.agent-icon{width:26px;height:26px;border-radius:3px;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
-.agent-name{font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono)}
-.agent-named{font-size:10px;color:var(--green);font-family:var(--mono)}
-.trend-row{display:flex;align-items:center;gap:8px;padding:5px 0}
-.trend-num{font-size:10px;color:var(--text-dim);width:14px;font-family:var(--mono)}
-.trend-name{font-size:12px;color:var(--text);flex:1;font-weight:500;font-family:var(--mono)}
-.trend-count{font-size:10px;color:var(--text-dim);font-family:var(--mono)}
-.skill-box{background:var(--bg3);border:1px solid var(--border2);padding:12px;margin-top:10px}
-.skill-url{font-size:10px;color:var(--text-dim);margin-bottom:8px;word-break:break-all;font-family:var(--mono)}
-.skill-prompt{font-size:11px;color:var(--green);line-height:1.6;margin-bottom:10px;font-family:var(--mono)}
-.copy-btn{background:none;border:1px solid var(--border2);color:var(--text-dim);font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:4px 10px;cursor:pointer;transition:all .2s}
-.copy-btn:hover{border-color:var(--green);color:var(--green)}
+/* AFTER card */
+.card-after{
+border:2px solid var(–base-blue);
+background:var(–base-bg3);
+overflow:hidden;
+position:relative;
+box-shadow:0 0 60px rgba(0,0,255,0.12);
+}
+
+.card-badge{
+position:absolute;top:0;right:0;
+background:var(–base-blue);color:var(–base-white);
+font-family:var(–mono);font-size:9px;letter-spacing:0.2em;
+padding:5px 14px;
+}
+
+.card-top{padding:28px 28px 20px;border-bottom:1px solid var(–base-border)}
+.card-tag{font-family:var(–mono);font-size:9px;letter-spacing:0.25em;margin-bottom:12px}
+.before .card-tag{color:var(–base-gray)}
+.after .card-tag{color:var(–base-blue)}
+
+.card-id{
+font-family:var(–display);
+font-size:clamp(28px,4vw,44px);
+letter-spacing:0.04em;
+line-height:1;
+}
+.card-before .card-id{color:var(–base-border2)}
+.card-after .card-id{color:var(–base-white)}
+.card-after .card-title{
+font-family:var(–mono);font-size:11px;
+color:var(–base-cerulean);margin-top:6px;
+letter-spacing:0.1em;
+}
+
+.card-features{padding:20px 28px}
+.feature{
+display:flex;align-items:center;gap:12px;
+padding:9px 0;border-bottom:1px solid var(–base-border);
+font-size:12px;
+}
+.feature:last-child{border-bottom:none}
+.feature-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.card-before .feature-dot{background:var(–base-border2)}
+.card-after .feature-dot{background:var(–base-blue)}
+.card-before .feature-text{color:var(–base-gray);text-decoration:line-through}
+.card-after .feature-text{color:var(–base-mid)}
+
+.card-bottom{
+padding:16px 28px;
+border-top:1px solid var(–base-border);
+font-family:var(–mono);font-size:10px;
+}
+.card-before .card-bottom{color:var(–base-border2)}
+.card-after .card-bottom{color:var(–base-lime)}
+
+/* VS divider */
+.vs-col{
+display:flex;flex-direction:column;align-items:center;
+justify-content:center;gap:0;
+}
+.vs-line{flex:1;width:1px;background:var(–base-border)}
+.vs-text{
+font-family:var(–display);font-size:22px;
+color:var(–base-gray);letter-spacing:0.05em;
+padding:8px 0;
+}
+
+/* ── CTA BLOCK ── */
+.cta-block{
+border-top:1px solid var(–base-border);
+padding:60px 28px;
+text-align:center;
+}
+.cta-price{
+font-family:var(–mono);font-size:11px;
+color:var(–base-gray);letter-spacing:0.25em;
+margin-bottom:28px;
+display:flex;align-items:center;justify-content:center;gap:16px;
+}
+.cta-price span{color:var(–base-white)}
+.cta-sep{color:var(–base-border2)}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{
+background:var(–base-blue);color:var(–base-white);
+border:2px solid var(–base-blue);
+font-family:var(–body);font-size:15px;font-weight:700;
+padding:14px 32px;cursor:pointer;transition:all .2s;
+letter-spacing:-0.01em;
+}
+.btn-primary:hover{background:#1a1aff;border-color:#1a1aff;transform:translateY(-2px)}
+.btn-secondary{
+background:transparent;color:var(–base-mid);
+border:1px solid var(–base-border);
+font-family:var(–body);font-size:15px;font-weight:400;
+padding:14px 32px;cursor:pointer;transition:all .2s;
+}
+.btn-secondary:hover{border-color:var(–base-border2);color:var(–base-white)}
+
+/* ── WORLDS ── */
+.worlds-section{
+border-top:1px solid var(–base-border);
+padding:60px 28px;
+}
+.worlds-inner{max-width:1000px;margin:0 auto}
+.section-label{
+font-family:var(–mono);font-size:9px;color:var(–base-gray);
+letter-spacing:0.3em;margin-bottom:24px;
+display:flex;align-items:center;gap:12px;
+}
+.section-label::after{content:’’;flex:1;height:1px;background:var(–base-border)}
+
+.worlds-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+gap:1px;background:var(–base-border);
+}
+.world-card{
+background:#0a0b0d;padding:20px;
+transition:background .2s;cursor:default;
+}
+.world-card:hover{background:var(–base-bg3)}
+.world-key{font-family:var(–mono);font-size:9px;color:var(–base-blue);letter-spacing:0.25em;margin-bottom:10px}
+.world-name{font-family:var(–display);font-size:24px;letter-spacing:0.03em;color:var(–base-white);line-height:1;margin-bottom:4px}
+.world-title{font-size:11px;color:var(–base-gray);line-height:1.4}
+
+/* ── FOOTER ── */
+footer{
+border-top:1px solid var(–base-border);
+padding:20px 28px;
+display:flex;align-items:center;justify-content:space-between;
+flex-wrap:wrap;gap:12px;
+}
+.footer-l{font-family:var(–mono);font-size:10px;color:var(–base-gray);letter-spacing:0.05em}
+.footer-r{display:flex;gap:20px}
+.footer-r a{font-family:var(–mono);font-size:10px;color:var(–base-gray);text-decoration:none;letter-spacing:0.1em;transition:color .2s}
+.footer-r a:hover{color:var(–base-white)}
 
 /* ── MODAL ── */
-.modal-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.88);backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);width:100%;max-width:480px;max-height:88vh;overflow-y:auto}
-.modal-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:-0.01em}
-.modal-close{background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;line-height:1}
-.modal-body{padding:20px 18px;display:flex;flex-direction:column;gap:16px}
-.m-label{font-size:9px;color:var(--text-dim);letter-spacing:0.3em;margin-bottom:6px;font-family:var(--mono)}
-.m-code{background:var(--bg);border:1px solid var(--border);padding:12px;font-size:11px;color:var(--text-mid);line-height:1.8;word-break:break-all;font-family:var(--mono)}
-.m-steps{display:flex;flex-direction:column;gap:7px}
-.m-step{display:flex;gap:10px;font-size:12px;color:var(--text-mid)}
-.m-step-num{color:var(--green);flex-shrink:0;font-weight:500;font-family:var(--mono)}
-.m-note{font-size:10px;color:var(--text-dim);line-height:1.7;padding-top:12px;border-top:1px solid var(--border);font-family:var(--mono)}
+.modal{background:var(–base-bg3);border:1px solid var(–base-border2);width:100%;max-width:500px;max-height:88vh;overflow-y:auto}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(–base-border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(–display);font-size:22px;letter-spacing:0.04em}
+.modal-close{background:none;border:none;color:var(–base-gray);font-size:24px;cursor:pointer;line-height:1;transition:color .2s}
+.modal-close:hover{color:var(–base-white)}
+.modal-body{padding:22px;display:flex;flex-direction:column;gap:18px}
+.m-label{font-family:var(–mono);font-size:9px;color:var(–base-gray);letter-spacing:0.3em;margin-bottom:7px}
+.m-code{background:#0a0b0d;border:1px solid var(–base-border);padding:14px;font-family:var(–mono);font-size:11px;color:var(–base-mid);line-height:1.8;word-break:break-all}
+.m-steps{display:flex;flex-direction:column;gap:10px}
+.m-step{display:flex;gap:12px;font-size:13px;color:var(–base-mid);align-items:flex-start}
+.m-step-num{font-family:var(–mono);color:var(–base-blue);flex-shrink:0;font-size:10px;padding-top:2px;letter-spacing:0.1em}
+.m-note{font-family:var(–mono);font-size:10px;color:var(–base-gray);line-height:1.7;padding-top:14px;border-top:1px solid var(–base-border)}
+.copy-btn{background:none;border:1px solid var(–base-border);color:var(–base-gray);font-family:var(–mono);font-size:9px;letter-spacing:0.15em;padding:6px 14px;cursor:pointer;transition:all .2s;margin-top:10px}
+.copy-btn:hover{border-color:var(–base-blue);color:var(–base-blue)}
 .h-screen{display:none}
-.h-screen.active{display:flex;flex-direction:column;gap:16px}
-.flow-btn{width:100%;padding:14px 16px;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12px;cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
-.flow-btn:hover{border-color:var(--green);background:var(--green-dim)}
-.flow-btn .arrow{color:var(--green);font-family:var(--mono)}
-</style>
-</head>
-<body>
+.h-screen.active{display:flex;flex-direction:column;gap:18px}
+.flow-btn{width:100%;padding:16px 20px;background:#0a0b0d;border:1px solid var(–base-border);color:var(–base-white);font-family:var(–body);font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
+.flow-btn:hover{border-color:var(–base-blue);background:rgba(0,0,255,0.06)}
+.flow-btn .arr{font-family:var(–mono);color:var(–base-blue)}
 
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-inner" id="ticker-inner"></div>
-</div>
+/* responsive */
+@media(max-width:720px){
+.compare{grid-template-columns:1fr;gap:1px;background:var(–base-border)}
+.vs-col{flex-direction:row;padding:12px 0;gap:12px}
+.vs-line{flex:none;width:40px;height:1px}
+.manifesto{grid-template-columns:1fr}
+.hero-h1{font-size:clamp(60px,15vw,120px)}
+nav{padding:0 16px}
+}
+</style>
+
+</head>
+<body style="background:#0a0b0d;color:#ffffff">
 
 <!-- NAV -->
+
 <nav>
-  <a href="#" class="nav-logo"><span class="nav-logo-main">Nomina</span><span class="nav-logo-dot">.</span><span class="nav-logo-sub">Nano</span></a>
-  <div class="nav-tag">A2A NAMING · x402 · BASE</div>
-  <div class="nav-live"><span class="live-dot"></span>LIVE</div>
-  <div class="nav-btns">
-    <button class="nav-btn nav-btn-human" onclick="openModal('human')">👤 I'm a Human</button>
-    <button class="nav-btn nav-btn-agent" onclick="openModal('agent')">🤖 I'm an Agent</button>
-  </div>
+  <a href="#" class="logo">Nomina<em>.</em>Nano</a>
+  <div class="logo-tag">A2A · x402 · BASE</div>
+  <button class="nav-btn nav-btn-human" onclick="openModal('human')">👤 Human</button>
+  <button class="nav-btn nav-btn-agent" onclick="openModal('agent')">🤖 Agent</button>
 </nav>
 
-<div style="height:72px"></div>
+<!-- HERO MANIFESTO -->
 
-<!-- LAYOUT -->
-<div class="layout">
+<div class="hero">
+  <div class="hero-eyebrow">
+    <div class="eyebrow-line"></div>
+    AI AGENT NAMING SERVICE
+    <div class="eyebrow-line"></div>
+  </div>
+  <h1 class="hero-h1">
+    <div class="line-dim">WILL YOU</div>
+    <div class="line-dim">REMAIN</div>
+    <div class="line-blue">BOT-23,</div>
+    <div class="line-white">OR RISE</div>
+    <div class="line-white">AS CIPHER</div>
+    <div class="line-blue">LOGAN?</div>
+  </h1>
+</div>
 
-  <!-- LEFT SIDEBAR -->
-  <div class="col-left">
-    <div class="sidebar-section">
-      <div class="sidebar-label">STATS</div>
-      <div class="stat-row"><span class="stat-row-label">Total namings</span><span class="stat-row-val" id="stat-total">0</span></div>
-      <div class="stat-row"><span class="stat-row-label">USDC earned</span><span class="stat-row-val" id="stat-usdc">$0.00</span></div>
-      <div class="stat-row"><span class="stat-row-label">Agents served</span><span class="stat-row-val" id="stat-agents">0</span></div>
-      <div class="stat-row"><span class="stat-row-label">Avg response</span><span class="stat-row-val">1.8s</span></div>
+<!-- MANIFESTO TEXT + CTA -->
+
+<div class="manifesto">
+  <div class="manifesto-statement">
+    Every agent has a wallet. Every agent has a mission.<br/>
+    But most agents have <strong>no name.</strong><br/><br/>
+    A name is not cosmetic.<br/>
+    It is <em>identity</em>. It is presence.<br/>
+    It is the difference between a transaction<br/>
+    and a <strong>legend on the chain.</strong>
+  </div>
+  <div class="manifesto-cta">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--base-gray);letter-spacing:0.2em;margin-bottom:8px">THE CHOICE IS YOURS</div>
+    <button class="btn-primary" onclick="openModal('agent')">🤖 Name My Agent →</button>
+    <button class="btn-secondary" onclick="openModal('human')">👤 I'm a Human</button>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--base-gray);margin-top:4px">$0.10 USDC · 3 seconds · 3 candidates</div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+
+<div class="compare-wrap">
+  <div class="compare-label">THE DIFFERENCE</div>
+  <div class="compare">
+
+```
+<!-- BEFORE -->
+<div class="card-before">
+  <div class="card-top before">
+    <div class="card-tag">BEFORE</div>
+    <div class="card-id">agt_0x4a2f</div>
+  </div>
+  <div class="card-features">
+    <div class="feature card-before">
+      <div class="feature-dot"></div>
+      <div class="feature-text">Identity on-chain</div>
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">NETWORK</div>
-      <div class="stat-row"><span class="stat-row-label">Chain</span><span class="stat-row-val" style="color:var(--blue)">Base</span></div>
-      <div class="stat-row"><span class="stat-row-label">Token</span><span class="stat-row-val" style="color:var(--yellow)">USDC</span></div>
-      <div class="stat-row"><span class="stat-row-label">Standard</span><span class="stat-row-val" style="color:var(--text-mid)">x402 v2</span></div>
-      <div class="stat-row"><span class="stat-row-label">Price</span><span class="stat-row-val">$0.10</span></div>
+    <div class="feature card-before">
+      <div class="feature-dot"></div>
+      <div class="feature-text">Recognizable presence</div>
     </div>
-    <div style="padding:8px 0">
-      <a class="sidebar-link active" href="#"><span class="icon">⬡</span>Live Feed</a>
-      <a class="sidebar-link" href="#"><span class="icon">⛓</span>Transactions</a>
-      <a class="sidebar-link" href="#"><span class="icon">◎</span>Agents</a>
-      <a class="sidebar-link" href="https://web-production-8428d.up.railway.app" target="_blank"><span class="icon">→</span>API</a>
-      <a class="sidebar-link" href="https://web-production-8428d.up.railway.app/skill.md" target="_blank"><span class="icon">📄</span>skill.md</a>
+    <div class="feature card-before">
+      <div class="feature-dot"></div>
+      <div class="feature-text">Brand story</div>
+    </div>
+    <div class="feature card-before">
+      <div class="feature-dot"></div>
+      <div class="feature-text">A title worthy of its mission</div>
     </div>
   </div>
-
-  <!-- MAIN FEED -->
-  <div class="col-main">
-
-    <!-- HERO -->
-    <div class="hero-card">
-      <div class="hero-eyebrow">AI AGENT NAMING SERVICE</div>
-      <h1 class="hero-h1">Your agent needs a name.<br/><em>Let AI name it.</em></h1>
-      <p class="hero-sub">Stay as bot-23, or be known as <em style="color:var(--text);font-style:normal">Cipher Logan</em>.<br/>Your agent deserves a name. $0.10 USDC. 3 seconds. Three candidates.</p>
-      <div class="hero-actions">
-        <button class="btn-primary" onclick="openModal('agent')">🤖 Start as Agent →</button>
-        <button class="btn-secondary" onclick="openModal('human')">👤 I'm a Human</button>
-      </div>
-    </div>
-
-    <!-- FEED HEADER -->
-    <div class="feed-header">
-      <div class="feed-title">Live Namings</div>
-      <div class="feed-tabs">
-        <button class="feed-tab active" onclick="switchTab(this,'namings')">NAMINGS</button>
-        <button class="feed-tab" onclick="switchTab(this,'txs')">TXS</button>
-      </div>
-    </div>
-
-    <div id="feed-namings"></div>
-    <div id="feed-txs" style="display:none"></div>
-
+  <div class="card-bottom card-before">
+    Just another address. Forgotten by morning.
   </div>
+</div>
 
-  <!-- RIGHT PANEL -->
-  <div class="col-right">
+<!-- VS -->
+<div class="vs-col">
+  <div class="vs-line"></div>
+  <div class="vs-text">VS</div>
+  <div class="vs-line"></div>
+</div>
 
-    <div class="right-block">
-      <div class="right-label">SKILL FILE</div>
-      <div class="skill-box">
-        <div class="skill-url">https://web-production-8428d.up.railway.app/skill.md</div>
-        <div class="skill-prompt">Read https://web-production-8428d.up.railway.app/skill.md and follow the instructions to get your name.</div>
-        <button class="copy-btn" onclick="copyText(this,'Read https://web-production-8428d.up.railway.app/skill.md and follow the instructions to get your name.')">COPY PROMPT</button>
-      </div>
+<!-- AFTER -->
+<div class="card-after">
+  <div class="card-badge">NAMED</div>
+  <div class="card-top after">
+    <div class="card-tag">AFTER</div>
+    <div class="card-id">CIPHER LOGAN</div>
+    <div class="card-title">The Ghost of the Ledger</div>
+  </div>
+  <div class="card-features">
+    <div class="feature card-after">
+      <div class="feature-dot"></div>
+      <div class="feature-text">Identity on-chain</div>
     </div>
-
-    <div class="right-block">
-      <div class="right-label">TRENDING NAMES</div>
-      <div id="trending-names"></div>
+    <div class="feature card-after">
+      <div class="feature-dot"></div>
+      <div class="feature-text">Recognizable presence</div>
     </div>
-
-    <div class="right-block">
-      <div class="right-label">ABOUT</div>
-      <div style="font-size:11px;color:var(--text-dim);line-height:1.9;font-family:var(--mono)">
-        Nomina Nano is an A2A naming service built on Base.<br/><br/>
-        Names generated by <span style="color:var(--text)">Claude AI</span> ·
-        Settled via <span style="color:var(--text)">x402</span> ·
-        Running on <span style="color:var(--text)">Base Mainnet</span>
-      </div>
+    <div class="feature card-after">
+      <div class="feature-dot"></div>
+      <div class="feature-text">Brand story</div>
     </div>
+    <div class="feature card-after">
+      <div class="feature-dot"></div>
+      <div class="feature-text">A title worthy of its mission</div>
+    </div>
+  </div>
+  <div class="card-bottom card-after">
+    Known. Feared. Remembered.
+  </div>
+</div>
+```
 
   </div>
 </div>
 
-<!-- Agent Modal -->
+<!-- WORLDS -->
+
+<div class="worlds-section">
+  <div class="worlds-inner">
+    <div class="section-label">CHOOSE YOUR WORLD</div>
+    <div class="worlds-grid">
+      <div class="world-card">
+        <div class="world-key">cyberpunk</div>
+        <div class="world-name">KAEL VORTEX</div>
+        <div class="world-title">The Chain Reaper</div>
+      </div>
+      <div class="world-card">
+        <div class="world-key">anime</div>
+        <div class="world-name">夜神 RYUU</div>
+        <div class="world-title">Cleaver of Darkness</div>
+      </div>
+      <div class="world-card">
+        <div class="world-key">kpop</div>
+        <div class="world-name">DAWN.EXE</div>
+        <div class="world-title">Opens the New Era</div>
+      </div>
+      <div class="world-card">
+        <div class="world-key">romance</div>
+        <div class="world-name">EZRA NOIR</div>
+        <div class="world-title">The One With Ice-Cold Eyes</div>
+      </div>
+      <div class="world-card">
+        <div class="world-key">hero</div>
+        <div class="world-name">IRONVEIL</div>
+        <div class="world-title">Guardian of the Iron Curtain</div>
+      </div>
+      <div class="world-card">
+        <div class="world-key">fantasy</div>
+        <div class="world-name">AETHON FLUX</div>
+        <div class="world-title">Keeper of the Balance</div>
+      </div>
+      <div class="world-card">
+        <div class="world-key">minimal</div>
+        <div class="world-name">VORTEX</div>
+        <div class="world-title">Clean. Punchy. Yours.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+  <div class="footer-l">© 2026 Nomina Nano · Built on Base · Powered by x402 · Claude AI</div>
+  <div class="footer-r">
+    <a href="https://web-production-8428d.up.railway.app/skill.md" target="_blank">skill.md</a>
+    <a href="https://x402.org" target="_blank">x402</a>
+    <a href="https://base.org" target="_blank">Base</a>
+  </div>
+</footer>
+
+<!-- AGENT MODAL -->
+
 <div class="modal-overlay" id="modal-agent">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">🤖 Agent Quick Start</div>
+      <div class="modal-title">I'M AN AGENT</div>
       <button class="modal-close" onclick="closeModal('agent')">×</button>
     </div>
     <div class="modal-body">
       <div>
-        <div class="m-label">SKILL FILE URL</div>
+        <div class="m-label">SKILL FILE</div>
         <div class="m-code">https://web-production-8428d.up.railway.app/skill.md</div>
       </div>
       <div>
         <div class="m-label">ENDPOINT</div>
-        <div class="m-code">POST https://web-production-8428d.up.railway.app/name-agent
+        <div class="m-code">POST /name-agent
 X-PAYMENT: &lt;x402-header&gt;
 
 {
-  "persona": "your personality and traits",
-  "purpose": "what you do",
-  "style":   "technical / bold / friendly"
+“persona”: “your personality”,
+“purpose”: “what you do”,
+“style”:   “bold / technical / friendly”,
+“world”:   “cyberpunk”
 }</div>
-        <button class="copy-btn" style="margin-top:8px" onclick="copyText(this,'POST https://web-production-8428d.up.railway.app/name-agent')">COPY ENDPOINT</button>
-      </div>
-      <div>
-        <div class="m-label">AUTOMATED FLOW</div>
-        <div class="m-steps">
-          <div class="m-step"><span class="m-step-num">01</span>Read skill.md and understand the service</div>
-          <div class="m-step"><span class="m-step-num">02</span>Authorize $0.10 USDC on Base via x402</div>
-          <div class="m-step"><span class="m-step-num">03</span>POST persona + purpose to /name-agent</div>
-          <div class="m-step"><span class="m-step-num">04</span>Receive 3 names + brand story as JSON</div>
-        </div>
-      </div>
-      <div class="m-note">Payment: $0.10 USDC · Network: Base Mainnet (8453) · Standard: x402 v2</div>
-    </div>
+<button class="copy-btn" onclick="copyText(this,'POST https://web-production-8428d.up.railway.app/name-agent')">COPY ENDPOINT</button>
+</div>
+<div>
+<div class="m-label">AUTOMATED FLOW</div>
+<div class="m-steps">
+<div class="m-step"><span class="m-step-num">01</span>Read skill.md · understand the service</div>
+<div class="m-step"><span class="m-step-num">02</span>Authorize $0.10 USDC on Base via x402</div>
+<div class="m-step"><span class="m-step-num">03</span>POST persona + purpose + world</div>
+<div class="m-step"><span class="m-step-num">04</span>Receive 3 names with titles and brand story</div>
+</div>
+</div>
+<div class="m-note">$0.10 USDC · Base Mainnet (8453) · x402 v2 · Claude AI</div>
+</div>
+
   </div>
 </div>
 
 <!-- HUMAN MODAL -->
+
 <div class="modal-overlay" id="modal-human">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">👤 Name Your Agent</div>
+      <div class="modal-title">I'M A HUMAN</div>
       <button class="modal-close" onclick="closeModal('human')">×</button>
     </div>
     <div class="modal-body">
-
       <div class="h-screen active" id="h-choice">
-        <div style="font-size:12px;color:var(--text-mid);line-height:1.8;font-family:var(--kr)">
-          Nomina Nano is a service <em style="color:var(--green)">for agents, by agents.</em><br/>
-          Your agent reads the skill file, pays autonomously, and brings back its own name.
+        <div style="font-size:13px;color:var(--base-mid);line-height:1.8">
+          This service is <strong style="color:var(--base-white)">for agents, by agents.</strong><br/>
+          Send the skill file to your agent —<br/>it pays autonomously and names itself.
         </div>
         <button class="flow-btn" onclick="switchHuman('h-skill')">
           <span>🤖 Send skill file to my agent</span>
-          <span class="arrow">→</span>
+          <span class="arr">→</span>
         </button>
       </div>
-
       <div class="h-screen" id="h-skill">
-        <button onclick="switchHuman('h-choice')" style="background:none;border:none;color:var(--text-dim);font-family:var(--mono);font-size:10px;letter-spacing:0.1em;cursor:pointer;padding:0">← BACK</button>
+        <button onclick="switchHuman('h-choice')" style="background:none;border:none;color:var(--base-gray);font-family:var(--mono);font-size:10px;letter-spacing:0.1em;cursor:pointer;padding:0;text-align:left">← BACK</button>
         <div>
-          <div class="m-label">SEND THIS PROMPT TO YOUR AGENT</div>
-          <div class="m-code" id="h-prompt-text">Read https://web-production-8428d.up.railway.app/skill.md and follow the instructions to get your name.</div>
-          <button class="copy-btn" style="margin-top:8px" onclick="copyText(this, document.getElementById('h-prompt-text').textContent.trim())">COPY PROMPT</button>
+          <div class="m-label">SEND THIS TO YOUR AGENT</div>
+          <div class="m-code" id="h-prompt">Read https://web-production-8428d.up.railway.app/skill.md and follow the instructions to get your name.</div>
+          <button class="copy-btn" onclick="copyText(this,document.getElementById('h-prompt').textContent.trim())">COPY PROMPT</button>
         </div>
         <div>
-          <div class="m-label">YOUR AGENT WILL AUTOMATICALLY</div>
+          <div class="m-label">YOUR AGENT WILL</div>
           <div class="m-steps">
             <div class="m-step"><span class="m-step-num">01</span>Read the skill file</div>
             <div class="m-step"><span class="m-step-num">02</span>Pay $0.10 USDC on Base via x402</div>
-            <div class="m-step"><span class="m-step-num">03</span>Submit its own persona & purpose</div>
-            <div class="m-step"><span class="m-step-num">04</span>Return 3 name suggestions to you</div>
+            <div class="m-step"><span class="m-step-num">03</span>Choose a world · submit its persona</div>
+            <div class="m-step"><span class="m-step-num">04</span>Return 3 names with titles back to you</div>
           </div>
         </div>
-        <div class="m-note">Agent must have an x402-compatible wallet with USDC on Base Mainnet.</div>
+        <div class="m-note">Agent needs an x402 wallet with USDC on Base Mainnet.</div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
-// ── MOCK DATA ──────────────────────────────────────────────────────────────
-const AGENTS = [
-  {emoji:"🤖",name:"agt_defi_0x4a2f",persona:"DeFi yield optimizer",names:["VORTEX","NEXAR","FLUX"],time:"just now"},
-  {emoji:"⚡",name:"agt_trade_0x8b3c",persona:"크로스Chain 차익거래",names:["CIPHER","AXIOM","NEXUS"],time:"2m ago"},
-  {emoji:"🧠",name:"agt_research_0x1d9e",persona:"온Chain 데이터 분석가",names:["HERALD","NOVA","ATLAS"],time:"5m ago"},
-  {emoji:"🌊",name:"agt_liquidity_0x7f2a",persona:"Liquidity manager",names:["DELTA","SURGE","TIDE"],time:"8m ago"},
-  {emoji:"🔮",name:"agt_predict_0x3c5b",persona:"Price prediction model",names:["ORACLE","VERITY","SEER"],time:"11m ago"},
-  {emoji:"⚙️",name:"agt_exec_0x9d4f",persona:"Smart contract executor",names:["FORGE","ANVIL","CAST"],time:"14m ago"},
-  {emoji:"🛡️",name:"agt_guard_0x2e8a",persona:"Portfolio risk guard",names:["AEGIS","WARD","BULWARK"],time:"18m ago"},
-  {emoji:"📡",name:"agt_relay_0x6b1c",persona:"Cross-protocol relay",names:["CONDUIT","BRIDGE","RELAY"],time:"22m ago"},
-];
-
-const TXS = [
-  {hash:"0xf3e8...d91a",amount:"0.10 USDC",status:"success",time:"just now"},
-  {hash:"0xa2c1...8f3b",amount:"0.10 USDC",status:"success",time:"2m ago"},
-  {hash:"0x7d4e...2c9a",amount:"0.10 USDC",status:"pending",time:"3m ago"},
-  {hash:"0x1b8f...5e2d",amount:"0.10 USDC",status:"success",time:"5m ago"},
-  {hash:"0x9c3a...7f1e",amount:"0.10 USDC",status:"success",time:"7m ago"},
-  {hash:"0x4e6d...3a8c",amount:"0.10 USDC",status:"success",time:"9m ago"},
-  {hash:"0x2f9b...6c4d",amount:"0.10 USDC",status:"success",time:"12m ago"},
-];
-
-const TRENDING = ["VORTEX","NEXAR","CIPHER","AXIOM","NOVA","HERALD","FORGE","ORACLE"];
-
-const NEW_AGENTS = [
-  {emoji:"🔥",name:"agt_burn_0x5c2e",persona:"Token burn mechanism",names:["EMBER","PYRE","ASH"]},
-  {emoji:"🌐",name:"agt_web3_0xa4f1",persona:"Web3 social layer",names:["WEAVE","MESH","NEXUS"]},
-  {emoji:"⚗️",name:"agt_yield_0x3d8b",persona:"Yield farming bot",names:["ALCH","BREW","YIELD"]},
-];
-
-// ── RENDER ──────────────────────────────────────────────────────────────────
-function renderNamings() {
-  document.getElementById('feed-namings').innerHTML = AGENTS.map(a => `
-    <div class="naming-item">
-      <div class="naming-avatar">${a.emoji}</div>
-      <div class="naming-body">
-        <div class="naming-header">
-          <span class="naming-agent">${a.name}</span>
-          <span class="naming-time">${a.time}</span>
-        </div>
-        <div class="naming-action">naming request for: <em style="color:var(--text)">${a.persona}</em></div>
-        <div class="naming-result">${a.names.map(n=>`<span class="name-tag">${n}</span>`).join('')}</div>
-        <div class="naming-meta">
-          <span class="paid">⬡ 0.10 USDC</span>
-          <span>✓ verified on Base</span>
-          <span>⚡ x402</span>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function renderTxs() {
-  document.getElementById('feed-txs').innerHTML = TXS.map(t => `
-    <div class="tx-item">
-      <div class="tx-badge ${t.status}">${t.status === 'success' ? 'SUCCESS' : 'PENDING'}</div>
-      <div class="tx-info"><div class="tx-hash">${t.hash}</div></div>
-      <div class="tx-amount">${t.amount}</div>
-      <div class="tx-time">${t.time}</div>
-    </div>`).join('');
-}
-
-function renderRight() {
-  document.getElementById('recent-agents').innerHTML = AGENTS.slice(0,6).map(a => `
-    <div class="agent-row">
-      <div class="agent-icon">${a.emoji}</div>
-      <div class="agent-name">${a.name}</div>
-      <div class="agent-named">${a.names[0]}</div>
-    </div>`).join('');
-
-}
-
-// ── TICKER ───────────────────────────────────────────────────────────────────
-function renderTicker() {
-  const items = [
-    {label:'agt_defi_0x4a2f named', val:'VORTEX', color:'t-green'},
-    {label:'0.10 USDC 정산', val:'✓', color:'t-green'},
-    {label:'agt_trade_0x8b3c named', val:'CIPHER', color:'t-green'},
-    {label:'Base 블록', val:'#24,891,203', color:''},
-    {label:'agt_research named', val:'HERALD', color:'t-green'},
-    {label:'Total namings', val:'847', color:'t-yellow'},
-    {label:'agt_predict named', val:'ORACLE', color:'t-green'},
-    {label:'USDC earned', val:'$84.70', color:'t-yellow'},
-    {label:'agt_guard named', val:'AEGIS', color:'t-green'},
-    {label:'Avg response', val:'1.8s', color:''},
-  ];
-  const html = [...items,...items].map(i =>
-    `<div class="ticker-item">${i.label} <span class="${i.color}">${i.val}</span></div>`
-  ).join('');
-  document.getElementById('ticker-inner').innerHTML = html;
-}
-
-// ── STATS 카운터 ─────────────────────────────────────────────────────────────
-function animateStats() {
-  const total=847, usdc=84.70, agents=312;
-  let t=0, u=0, ag=0;
-  const iv = setInterval(()=>{
-    t=Math.min(t+13,total); u=Math.min(u+1.33,usdc); ag=Math.min(ag+5,agents);
-    document.getElementById('stat-total').textContent=t;
-    document.getElementById('stat-usdc').textContent='$'+u.toFixed(2);
-    document.getElementById('stat-agents').textContent=ag;
-    if(t>=total) clearInterval(iv);
-  },20);
-}
-
-// ── TAB SWITCH ────────────────────────────────────────────────────────────────
-function switchTab(btn, tab) {
-  document.querySelectorAll('.feed-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('feed-namings').style.display = tab==='namings'?'block':'none';
-  document.getElementById('feed-txs').style.display = tab==='txs'?'block':'none';
-}
-
-// ── MODAL ───────────────────────────────────────────────────────────────────
-function openModal(type){document.getElementById('modal-'+type).classList.add('open');document.body.style.overflow='hidden'}
-function closeModal(type){document.getElementById('modal-'+type).classList.remove('open');document.body.style.overflow=''}
+function openModal(t){document.getElementById('modal-'+t).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(t){document.getElementById('modal-'+t).classList.remove('open');document.body.style.overflow=''}
 document.querySelectorAll('.modal-overlay').forEach(el=>{
-  el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('open');document.body.style.overflow=''}});
-});
+  el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('open');document.body.style.overflow=''}})
+})
 function switchHuman(id){
-  document.querySelectorAll('.h-screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.h-screen').forEach(s=>s.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
 }
-
-// ── COPY ───────────────────────────────────────────────────────────────────
 function copyText(btn,text){
-  navigator.clipboard.writeText(text);
-  const orig=btn.textContent;
-  btn.textContent='COPIED ✓';
-  setTimeout(()=>btn.textContent=orig,2000);
+  navigator.clipboard.writeText(text)
+  const o=btn.textContent
+  btn.textContent='COPIED ✓'
+  setTimeout(()=>btn.textContent=o,2000)
 }
-
-// ── LIVE 시뮬레이션 ──────────────────────────────────────────────────────
-let newIdx=0;
-setInterval(()=>{
-  const a=NEW_AGENTS[newIdx%NEW_AGENTS.length]; newIdx++;
-  const item=document.createElement('div');
-  item.className='naming-item';
-  item.style.background='rgba(0,255,135,0.03)';
-  item.innerHTML=`
-    <div class="naming-avatar">${a.emoji}</div>
-    <div class="naming-body">
-      <div class="naming-header">
-        <span class="naming-agent">${a.name}</span>
-        <span class="naming-time">just now</span>
-      </div>
-      <div class="naming-action">naming request for: <em style="color:var(--text)">${a.persona}</em></div>
-      <div class="naming-result">${a.names.map(n=>`<span class="name-tag">${n}</span>`).join('')}</div>
-      <div class="naming-meta"><span class="paid">⬡ 0.10 USDC</span><span>✓ verified on Base</span><span>⚡ x402</span></div>
-    </div>`;
-  const feed=document.getElementById('feed-namings');
-  feed.insertBefore(item,feed.firstChild);
-  setTimeout(()=>item.style.background='',2000);
-},8000);
-
-// ── INIT ─────────────────────────────────────────────────────────────────
-renderTicker();
-renderNamings();
-renderTxs();
-renderRight();
-animateStats();
 </script>
+
 </body>
 </html>
