@@ -8,7 +8,7 @@ app = FastAPI()
 
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 WALLET_ADDRESS = os.environ.get("WALLET_ADDRESS")
-PRICE_USDC = 0.5
+PRICE_USDC = 100000
 
 @app.get("/")
 def root():
@@ -24,7 +24,7 @@ def x402_info():
     return {
         "price": str(PRICE_USDC),
         "currency": "USDC",
-        "network": "base-sepolia",
+        "network": "base",
         "wallet": WALLET_ADDRESS,
         "endpoint": "/name-agent"
     }
@@ -40,7 +40,7 @@ async def verify_payment(payment_header: str) -> bool:
                     "payment": payment_header,
                     "amount": str(PRICE_USDC),
                     "currency": "USDC",
-                    "network": "base-sepolia",
+                    "network": "base",
                     "recipient": WALLET_ADDRESS
                 },
                 timeout=10.0
@@ -61,7 +61,7 @@ async def name_agent(request: Request):
             detail={
                 "error": "Payment required",
                 "price": f"{PRICE_USDC} USDC",
-                "network": "base-sepolia",
+                "network": "base",
                 "wallet": WALLET_ADDRESS
             }
         )
@@ -110,6 +110,6 @@ async def name_agent(request: Request):
     # 4. 결과 반환
     return JSONResponse({
         "status": "success",
-        "payment": "0.5 USDC verified",
+        "payment": "0.1 USDC verified",
         "result": result
     })
