@@ -5,10 +5,7 @@ import os
 
 app = FastAPI()
 
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-WALLET_ADDRESS = os.environ.get("WALLET_ADDRESS")
-
-client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 @app.get("/")
 def root():
@@ -17,33 +14,31 @@ def root():
 @app.post("/name-agent")
 async def name_agent(request: Request):
 
-    # 1. ¿äÃ» µ¥ÀÌÅÍ ¹Ş±â
     body = await request.json()
-    persona    = body.get("persona", "")
-    purpose    = body.get("purpose", "")
-    style      = body.get("style", "")
+    persona = body.get("persona", "")
+    purpose = body.get("purpose", "")
+    style   = body.get("style", "")
 
     if not persona or not purpose:
-        raise HTTPException(status_code=400, detail="persona¿Í purpose´Â ÇÊ¼öÀÔ´Ï´Ù.")
+        raise HTTPException(status_code=400, detail="personaì™€ purposeëŠ” í•„ìˆ˜ì…ë‹ˆë‹¤.")
 
-    # 2. Claude¿¡°Ô ÀÌ¸§ »ı¼º ¿äÃ»
     prompt = f"""
-    ´ç½ÅÀº AI ¿¡ÀÌÀüÆ® Àü¹® ÀÛ¸í°¡ÀÔ´Ï´Ù.
-    ¾Æ·¡ Á¤º¸¸¦ ¹ÙÅÁÀ¸·Î ¿¡ÀÌÀüÆ® ÀÌ¸§ 3°³¸¦ ÃßÃµÇØÁÖ¼¼¿ä.
+    ë‹¹ì‹ ì€ AI ì—ì´ì „íŠ¸ ì „ë¬¸ ì‘ëª…ê°€ì…ë‹ˆë‹¤.
+    ì•„ë˜ ì •ë³´ë¥¼ ë°”íƒ•ìœ¼ë¡œ ì—ì´ì „íŠ¸ ì´ë¦„ 3ê°œë¥¼ ì¶”ì²œí•´ì£¼ì„¸ìš”.
 
-    - Æä¸£¼Ò³ª: {persona}
-    - ¸ñÀû: {purpose}
-    - ½ºÅ¸ÀÏ: {style}
+    - í˜ë¥´ì†Œë‚˜: {persona}
+    - ëª©ì : {purpose}
+    - ìŠ¤íƒ€ì¼: {style}
 
-    ÀÀ´ä Çü½Ä (JSON¸¸ ¹İÈ¯):
+    ì‘ë‹µ í˜•ì‹ (JSONë§Œ ë°˜í™˜):
     {{
-        "names": ["ÀÌ¸§1", "ÀÌ¸§2", "ÀÌ¸§3"],
-        "reason": "ÃßÃµ ÀÌÀ¯ ÇÑ ÁÙ"
+        "names": ["ì´ë¦„1", "ì´ë¦„2", "ì´ë¦„3"],
+        "reason": "ì¶”ì²œ ì´ìœ  í•œ ì¤„"
     }}
     """
 
     message = client.messages.create(
-        model="claude-opus-4-5-20251001",
+        model="claude-haiku-4-5-20251001",
         max_tokens=500,
         messages=[{"role": "user", "content": prompt}]
     )
@@ -51,7 +46,6 @@ async def name_agent(request: Request):
     import json
     result = json.loads(message.content[0].text)
 
-    # 3. °á°ú ¹İÈ¯
     return JSONResponse({
         "status": "success",
         "payment": "0.5 USDC received",
