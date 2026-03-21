@@ -12,6 +12,7 @@ import json
 from datetime import datetime
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 WALLET_ADDRESS = os.environ.get("WALLET_ADDRESS")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
