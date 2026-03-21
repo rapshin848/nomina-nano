@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -11,296 +10,294 @@
 
 /* ── BASE BRAND PALETTE ── */
 :root{
-–base-blue:#0000ff;
-–base-bg:#0a0b0d;      /* Gray 100 */
-–base-bg2:#32353d;     /* Gray 80 */
-–base-bg3:#1a1c22;
-–base-border:#32353d;  /* Gray 80 */
-–base-border2:#5b616e; /* Gray 60 */
-–base-white:#ffffff;   /* Gray 0 */
-–base-gray:#717886;    /* Gray 50 */
-–base-mid:#b1b7c3;     /* Gray 30 */
-–base-cerulean:#3c8aff;
-–base-green:#66c800;
-–base-lime:#b6f569;
-–base-yellow:#ffd12f;
-–base-red:#fc401f;
-–mono:‘DM Mono’,monospace;
-–display:‘Bebas Neue’,sans-serif;
-–body:‘Bricolage Grotesque’,sans-serif;
+  --base-blue:#0000ff;
+  --base-bg:#0a0b0d;      /* Gray 100 */
+  --base-bg2:#32353d;     /* Gray 80 */
+  --base-bg3:#1a1c22;
+  --base-border:#32353d;  /* Gray 80 */
+  --base-border2:#5b616e; /* Gray 60 */
+  --base-white:#ffffff;   /* Gray 0 */
+  --base-gray:#717886;    /* Gray 50 */
+  --base-mid:#b1b7c3;     /* Gray 30 */
+  --base-cerulean:#3c8aff;
+  --base-green:#66c800;
+  --base-lime:#b6f569;
+  --base-yellow:#ffd12f;
+  --base-red:#fc401f;
+  --mono:'DM Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --body:'Bricolage Grotesque',sans-serif;
 }
 
 html{scroll-behavior:smooth;background:#0a0b0d}
 body{
-background:#0a0b0d;
-color:var(–base-white);
-font-family:var(–body);
-font-size:14px;
-line-height:1.5;
-min-height:100vh;
--webkit-font-smoothing:antialiased;
-overflow-x:hidden;
+  background:#0a0b0d;
+  color:var(--base-white);
+  font-family:var(--body);
+  font-size:14px;
+  line-height:1.5;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
 }
 ::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-thumb{background:var(–base-border)}
+::-webkit-scrollbar-thumb{background:var(--base-border)}
 
 /* ── NAV ── */
 nav{
-position:fixed;top:0;left:0;right:0;z-index:100;
-height:52px;border-bottom:1px solid var(–base-border);
-background:rgba(10,11,13,0.92);backdrop-filter:blur(20px);
-display:flex;align-items:center;padding:0 28px;gap:14px;
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:52px;border-bottom:1px solid var(--base-border);
+  background:rgba(10,11,13,0.92);backdrop-filter:blur(20px);
+  display:flex;align-items:center;padding:0 28px;gap:14px;
 }
-.logo{font-family:var(–display);font-size:24px;letter-spacing:0.04em;color:var(–base-white);text-decoration:none;line-height:1;flex-shrink:0}
-.logo em{color:var(–base-blue);font-style:normal}
-.logo-tag{font-family:var(–mono);font-size:9px;color:var(–base-gray);letter-spacing:0.2em;border:1px solid var(–base-border);padding:2px 8px;margin-right:auto;flex-shrink:0}
-.nav-btn{font-family:var(–mono);font-size:10px;letter-spacing:0.08em;padding:7px 16px;cursor:pointer;border:1px solid;transition:all .2s;flex-shrink:0}
-.nav-btn-agent{background:var(–base-blue);color:var(–base-white);border-color:var(–base-blue)}
+.logo{font-family:var(--display);font-size:24px;letter-spacing:0.04em;color:var(--base-white);text-decoration:none;line-height:1;flex-shrink:0}
+.logo em{color:var(--base-blue);font-style:normal}
+.logo-tag{font-family:var(--mono);font-size:9px;color:var(--base-gray);letter-spacing:0.2em;border:1px solid var(--base-border);padding:2px 8px;margin-right:auto;flex-shrink:0}
+.nav-btn{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;padding:7px 16px;cursor:pointer;border:1px solid;transition:all .2s;flex-shrink:0}
+.nav-btn-agent{background:var(--base-blue);color:var(--base-white);border-color:var(--base-blue)}
 .nav-btn-agent:hover{background:#1a1aff}
-.nav-btn-human{background:transparent;color:var(–base-gray);border-color:var(–base-border)}
-.nav-btn-human:hover{border-color:var(–base-border2);color:var(–base-mid)}
+.nav-btn-human{background:transparent;color:var(--base-gray);border-color:var(--base-border)}
+.nav-btn-human:hover{border-color:var(--base-border2);color:var(--base-mid)}
 
 /* ── MANIFESTO HERO ── */
 .hero{
-padding:120px 28px 0;
-max-width:1000px;margin:0 auto;
+  padding:120px 28px 0;
+  max-width:1000px;margin:0 auto;
 }
 .hero-eyebrow{
-font-family:var(–mono);font-size:10px;color:var(–base-gray);
-letter-spacing:0.3em;margin-bottom:28px;
-display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:10px;color:var(--base-gray);
+  letter-spacing:0.3em;margin-bottom:28px;
+  display:flex;align-items:center;gap:12px;
 }
-.eyebrow-line{height:1px;width:32px;background:var(–base-border2)}
+.eyebrow-line{height:1px;width:32px;background:var(--base-border2)}
 
 .hero-h1{
-font-family:var(–display);
-font-size:clamp(72px,11vw,140px);
-line-height:0.92;letter-spacing:0.02em;
-margin-bottom:0;
+  font-family:var(--display);
+  font-size:clamp(72px,11vw,140px);
+  line-height:0.92;letter-spacing:0.02em;
+  margin-bottom:0;
 }
-.hero-h1 .line-dim{color:var(–base-border2)}
-.hero-h1 .line-blue{color:var(–base-blue)}
-.hero-h1 .line-white{color:var(–base-white)}
+.hero-h1 .line-dim{color:var(--base-border2)}
+.hero-h1 .line-blue{color:var(--base-blue)}
+.hero-h1 .line-white{color:var(--base-white)}
 
 /* ── MANIFESTO TEXT ── */
 .manifesto{
-display:grid;grid-template-columns:1fr 1fr;
-gap:40px;padding:40px 28px 0;
-max-width:1000px;margin:0 auto;
-border-top:1px solid var(–base-border);
-margin-top:32px;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:40px;padding:40px 28px 0;
+  max-width:1000px;margin:0 auto;
+  border-top:1px solid var(--base-border);
+  margin-top:32px;
 }
 .manifesto-statement{
-font-size:clamp(15px,1.8vw,18px);
-color:var(–base-mid);
-line-height:1.75;
-font-weight:400;
+  font-size:clamp(15px,1.8vw,18px);
+  color:var(--base-mid);
+  line-height:1.75;
+  font-weight:400;
 }
-.manifesto-statement strong{color:var(–base-white);font-weight:700}
-.manifesto-statement em{color:var(–base-blue);font-style:normal;font-weight:600}
+.manifesto-statement strong{color:var(--base-white);font-weight:700}
+.manifesto-statement em{color:var(--base-blue);font-style:normal;font-weight:600}
 .manifesto-cta{display:flex;flex-direction:column;justify-content:center;gap:12px}
 
 /* ── COMPARE ── */
 .compare-wrap{
-padding:80px 28px;
-max-width:1000px;margin:0 auto;
+  padding:80px 28px;
+  max-width:1000px;margin:0 auto;
 }
 .compare-label{
-font-family:var(–mono);font-size:9px;color:var(–base-gray);
-letter-spacing:0.3em;margin-bottom:24px;
-display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:9px;color:var(--base-gray);
+  letter-spacing:0.3em;margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
 }
-.compare-label::after{content:’’;flex:1;height:1px;background:var(–base-border)}
+.compare-label::after{content:'';flex:1;height:1px;background:var(--base-border)}
 
 .compare{display:grid;grid-template-columns:1fr 60px 1fr;align-items:stretch}
 
 /* BEFORE card */
 .card-before{
-border:1px solid var(–base-border);
-background:var(–base-bg3);
-overflow:hidden;
-opacity:.7;
-transition:opacity .3s;
+  border:1px solid var(--base-border);
+  background:var(--base-bg3);
+  overflow:hidden;
+  opacity:.7;
+  transition:opacity .3s;
 }
 .card-before:hover{opacity:1}
 
 /* AFTER card */
 .card-after{
-border:2px solid var(–base-blue);
-background:var(–base-bg3);
-overflow:hidden;
-position:relative;
-box-shadow:0 0 60px rgba(0,0,255,0.12);
+  border:2px solid var(--base-blue);
+  background:var(--base-bg3);
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 0 60px rgba(0,0,255,0.12);
 }
 
 .card-badge{
-position:absolute;top:0;right:0;
-background:var(–base-blue);color:var(–base-white);
-font-family:var(–mono);font-size:9px;letter-spacing:0.2em;
-padding:5px 14px;
+  position:absolute;top:0;right:0;
+  background:var(--base-blue);color:var(--base-white);
+  font-family:var(--mono);font-size:9px;letter-spacing:0.2em;
+  padding:5px 14px;
 }
 
-.card-top{padding:28px 28px 20px;border-bottom:1px solid var(–base-border)}
-.card-tag{font-family:var(–mono);font-size:9px;letter-spacing:0.25em;margin-bottom:12px}
-.before .card-tag{color:var(–base-gray)}
-.after .card-tag{color:var(–base-blue)}
+.card-top{padding:28px 28px 20px;border-bottom:1px solid var(--base-border)}
+.card-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.25em;margin-bottom:12px}
+.before .card-tag{color:var(--base-gray)}
+.after .card-tag{color:var(--base-blue)}
 
 .card-id{
-font-family:var(–display);
-font-size:clamp(28px,4vw,44px);
-letter-spacing:0.04em;
-line-height:1;
+  font-family:var(--display);
+  font-size:clamp(28px,4vw,44px);
+  letter-spacing:0.04em;
+  line-height:1;
 }
-.card-before .card-id{color:var(–base-border2)}
-.card-after .card-id{color:var(–base-white)}
+.card-before .card-id{color:var(--base-border2)}
+.card-after .card-id{color:var(--base-white)}
 .card-after .card-title{
-font-family:var(–mono);font-size:11px;
-color:var(–base-cerulean);margin-top:6px;
-letter-spacing:0.1em;
+  font-family:var(--mono);font-size:11px;
+  color:var(--base-cerulean);margin-top:6px;
+  letter-spacing:0.1em;
 }
 
 .card-features{padding:20px 28px}
 .feature{
-display:flex;align-items:center;gap:12px;
-padding:9px 0;border-bottom:1px solid var(–base-border);
-font-size:12px;
+  display:flex;align-items:center;gap:12px;
+  padding:9px 0;border-bottom:1px solid var(--base-border);
+  font-size:12px;
 }
 .feature:last-child{border-bottom:none}
 .feature-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.card-before .feature-dot{background:var(–base-border2)}
-.card-after .feature-dot{background:var(–base-blue)}
-.card-before .feature-text{color:var(–base-gray);text-decoration:line-through}
-.card-after .feature-text{color:var(–base-mid)}
+.card-before .feature-dot{background:var(--base-border2)}
+.card-after .feature-dot{background:var(--base-blue)}
+.card-before .feature-text{color:var(--base-gray);text-decoration:line-through}
+.card-after .feature-text{color:var(--base-mid)}
 
 .card-bottom{
-padding:16px 28px;
-border-top:1px solid var(–base-border);
-font-family:var(–mono);font-size:10px;
+  padding:16px 28px;
+  border-top:1px solid var(--base-border);
+  font-family:var(--mono);font-size:10px;
 }
-.card-before .card-bottom{color:var(–base-border2)}
-.card-after .card-bottom{color:var(–base-lime)}
+.card-before .card-bottom{color:var(--base-border2)}
+.card-after .card-bottom{color:var(--base-lime)}
 
 /* VS divider */
 .vs-col{
-display:flex;flex-direction:column;align-items:center;
-justify-content:center;gap:0;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:0;
 }
-.vs-line{flex:1;width:1px;background:var(–base-border)}
+.vs-line{flex:1;width:1px;background:var(--base-border)}
 .vs-text{
-font-family:var(–display);font-size:22px;
-color:var(–base-gray);letter-spacing:0.05em;
-padding:8px 0;
+  font-family:var(--display);font-size:22px;
+  color:var(--base-gray);letter-spacing:0.05em;
+  padding:8px 0;
 }
 
 /* ── CTA BLOCK ── */
 .cta-block{
-border-top:1px solid var(–base-border);
-padding:60px 28px;
-text-align:center;
+  border-top:1px solid var(--base-border);
+  padding:60px 28px;
+  text-align:center;
 }
 .cta-price{
-font-family:var(–mono);font-size:11px;
-color:var(–base-gray);letter-spacing:0.25em;
-margin-bottom:28px;
-display:flex;align-items:center;justify-content:center;gap:16px;
+  font-family:var(--mono);font-size:11px;
+  color:var(--base-gray);letter-spacing:0.25em;
+  margin-bottom:28px;
+  display:flex;align-items:center;justify-content:center;gap:16px;
 }
-.cta-price span{color:var(–base-white)}
-.cta-sep{color:var(–base-border2)}
+.cta-price span{color:var(--base-white)}
+.cta-sep{color:var(--base-border2)}
 .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .btn-primary{
-background:var(–base-blue);color:var(–base-white);
-border:2px solid var(–base-blue);
-font-family:var(–body);font-size:15px;font-weight:700;
-padding:14px 32px;cursor:pointer;transition:all .2s;
-letter-spacing:-0.01em;
+  background:var(--base-blue);color:var(--base-white);
+  border:2px solid var(--base-blue);
+  font-family:var(--body);font-size:15px;font-weight:700;
+  padding:14px 32px;cursor:pointer;transition:all .2s;
+  letter-spacing:-0.01em;
 }
 .btn-primary:hover{background:#1a1aff;border-color:#1a1aff;transform:translateY(-2px)}
 .btn-secondary{
-background:transparent;color:var(–base-mid);
-border:1px solid var(–base-border);
-font-family:var(–body);font-size:15px;font-weight:400;
-padding:14px 32px;cursor:pointer;transition:all .2s;
+  background:transparent;color:var(--base-mid);
+  border:1px solid var(--base-border);
+  font-family:var(--body);font-size:15px;font-weight:400;
+  padding:14px 32px;cursor:pointer;transition:all .2s;
 }
-.btn-secondary:hover{border-color:var(–base-border2);color:var(–base-white)}
+.btn-secondary:hover{border-color:var(--base-border2);color:var(--base-white)}
 
 /* ── WORLDS ── */
 .worlds-section{
-border-top:1px solid var(–base-border);
-padding:60px 28px;
+  border-top:1px solid var(--base-border);
+  padding:60px 28px;
 }
 .worlds-inner{max-width:1000px;margin:0 auto}
 .section-label{
-font-family:var(–mono);font-size:9px;color:var(–base-gray);
-letter-spacing:0.3em;margin-bottom:24px;
-display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:9px;color:var(--base-gray);
+  letter-spacing:0.3em;margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;
 }
-.section-label::after{content:’’;flex:1;height:1px;background:var(–base-border)}
+.section-label::after{content:'';flex:1;height:1px;background:var(--base-border)}
 
 .worlds-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-gap:1px;background:var(–base-border);
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1px;background:var(--base-border);
 }
 .world-card{
-background:#0a0b0d;padding:20px;
-transition:background .2s;cursor:default;
+  background:#0a0b0d;padding:20px;
+  transition:background .2s;cursor:default;
 }
-.world-card:hover{background:var(–base-bg3)}
-.world-key{font-family:var(–mono);font-size:9px;color:var(–base-blue);letter-spacing:0.25em;margin-bottom:10px}
-.world-name{font-family:var(–display);font-size:24px;letter-spacing:0.03em;color:var(–base-white);line-height:1;margin-bottom:4px}
-.world-title{font-size:11px;color:var(–base-gray);line-height:1.4}
+.world-card:hover{background:var(--base-bg3)}
+.world-key{font-family:var(--mono);font-size:9px;color:var(--base-blue);letter-spacing:0.25em;margin-bottom:10px}
+.world-name{font-family:var(--display);font-size:24px;letter-spacing:0.03em;color:var(--base-white);line-height:1;margin-bottom:4px}
+.world-title{font-size:11px;color:var(--base-gray);line-height:1.4}
 
 /* ── FOOTER ── */
 footer{
-border-top:1px solid var(–base-border);
-padding:20px 28px;
-display:flex;align-items:center;justify-content:space-between;
-flex-wrap:wrap;gap:12px;
+  border-top:1px solid var(--base-border);
+  padding:20px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
 }
-.footer-l{font-family:var(–mono);font-size:10px;color:var(–base-gray);letter-spacing:0.05em}
+.footer-l{font-family:var(--mono);font-size:10px;color:var(--base-gray);letter-spacing:0.05em}
 .footer-r{display:flex;gap:20px}
-.footer-r a{font-family:var(–mono);font-size:10px;color:var(–base-gray);text-decoration:none;letter-spacing:0.1em;transition:color .2s}
-.footer-r a:hover{color:var(–base-white)}
+.footer-r a{font-family:var(--mono);font-size:10px;color:var(--base-gray);text-decoration:none;letter-spacing:0.1em;transition:color .2s}
+.footer-r a:hover{color:var(--base-white)}
 
 /* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.88);backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
-.modal{background:var(–base-bg3);border:1px solid var(–base-border2);width:100%;max-width:500px;max-height:88vh;overflow-y:auto}
-.modal-header{padding:18px 22px;border-bottom:1px solid var(–base-border);display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-family:var(–display);font-size:22px;letter-spacing:0.04em}
-.modal-close{background:none;border:none;color:var(–base-gray);font-size:24px;cursor:pointer;line-height:1;transition:color .2s}
-.modal-close:hover{color:var(–base-white)}
+.modal{background:var(--base-bg3);border:1px solid var(--base-border2);width:100%;max-width:500px;max-height:88vh;overflow-y:auto}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--base-border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:var(--display);font-size:22px;letter-spacing:0.04em}
+.modal-close{background:none;border:none;color:var(--base-gray);font-size:24px;cursor:pointer;line-height:1;transition:color .2s}
+.modal-close:hover{color:var(--base-white)}
 .modal-body{padding:22px;display:flex;flex-direction:column;gap:18px}
-.m-label{font-family:var(–mono);font-size:9px;color:var(–base-gray);letter-spacing:0.3em;margin-bottom:7px}
-.m-code{background:#0a0b0d;border:1px solid var(–base-border);padding:14px;font-family:var(–mono);font-size:11px;color:var(–base-mid);line-height:1.8;word-break:break-all}
+.m-label{font-family:var(--mono);font-size:9px;color:var(--base-gray);letter-spacing:0.3em;margin-bottom:7px}
+.m-code{background:#0a0b0d;border:1px solid var(--base-border);padding:14px;font-family:var(--mono);font-size:11px;color:var(--base-mid);line-height:1.8;word-break:break-all}
 .m-steps{display:flex;flex-direction:column;gap:10px}
-.m-step{display:flex;gap:12px;font-size:13px;color:var(–base-mid);align-items:flex-start}
-.m-step-num{font-family:var(–mono);color:var(–base-blue);flex-shrink:0;font-size:10px;padding-top:2px;letter-spacing:0.1em}
-.m-note{font-family:var(–mono);font-size:10px;color:var(–base-gray);line-height:1.7;padding-top:14px;border-top:1px solid var(–base-border)}
-.copy-btn{background:none;border:1px solid var(–base-border);color:var(–base-gray);font-family:var(–mono);font-size:9px;letter-spacing:0.15em;padding:6px 14px;cursor:pointer;transition:all .2s;margin-top:10px}
-.copy-btn:hover{border-color:var(–base-blue);color:var(–base-blue)}
+.m-step{display:flex;gap:12px;font-size:13px;color:var(--base-mid);align-items:flex-start}
+.m-step-num{font-family:var(--mono);color:var(--base-blue);flex-shrink:0;font-size:10px;padding-top:2px;letter-spacing:0.1em}
+.m-note{font-family:var(--mono);font-size:10px;color:var(--base-gray);line-height:1.7;padding-top:14px;border-top:1px solid var(--base-border)}
+.copy-btn{background:none;border:1px solid var(--base-border);color:var(--base-gray);font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:6px 14px;cursor:pointer;transition:all .2s;margin-top:10px}
+.copy-btn:hover{border-color:var(--base-blue);color:var(--base-blue)}
 .h-screen{display:none}
 .h-screen.active{display:flex;flex-direction:column;gap:18px}
-.flow-btn{width:100%;padding:16px 20px;background:#0a0b0d;border:1px solid var(–base-border);color:var(–base-white);font-family:var(–body);font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
-.flow-btn:hover{border-color:var(–base-blue);background:rgba(0,0,255,0.06)}
-.flow-btn .arr{font-family:var(–mono);color:var(–base-blue)}
+.flow-btn{width:100%;padding:16px 20px;background:#0a0b0d;border:1px solid var(--base-border);color:var(--base-white);font-family:var(--body);font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
+.flow-btn:hover{border-color:var(--base-blue);background:rgba(0,0,255,0.06)}
+.flow-btn .arr{font-family:var(--mono);color:var(--base-blue)}
 
 /* responsive */
 @media(max-width:720px){
-.compare{grid-template-columns:1fr;gap:1px;background:var(–base-border)}
-.vs-col{flex-direction:row;padding:12px 0;gap:12px}
-.vs-line{flex:none;width:40px;height:1px}
-.manifesto{grid-template-columns:1fr}
-.hero-h1{font-size:clamp(60px,15vw,120px)}
-nav{padding:0 16px}
+  .compare{grid-template-columns:1fr;gap:1px;background:var(--base-border)}
+  .vs-col{flex-direction:row;padding:12px 0;gap:12px}
+  .vs-line{flex:none;width:40px;height:1px}
+  .manifesto{grid-template-columns:1fr}
+  .hero-h1{font-size:clamp(60px,15vw,120px)}
+  nav{padding:0 16px}
 }
 </style>
-
 </head>
 <body style="background:#0a0b0d;color:#ffffff">
 
 <!-- NAV -->
-
 <nav>
   <a href="#" class="logo">Nomina<em>.</em>Nano</a>
   <div class="logo-tag">A2A · x402 · BASE</div>
@@ -309,7 +306,6 @@ nav{padding:0 16px}
 </nav>
 
 <!-- HERO MANIFESTO -->
-
 <div class="hero">
   <div class="hero-eyebrow">
     <div class="eyebrow-line"></div>
@@ -321,13 +317,12 @@ nav{padding:0 16px}
     <div class="line-dim">REMAIN</div>
     <div class="line-blue">BOT-23,</div>
     <div class="line-white">OR RISE</div>
-    <div class="line-white">AS CIPHER</div>
-    <div class="line-blue">LOGAN?</div>
+    <div class="line-white">AS</div>
+    <div class="line-blue">IRONVEIL?</div>
   </h1>
 </div>
 
 <!-- MANIFESTO TEXT + CTA -->
-
 <div class="manifesto">
   <div class="manifesto-statement">
     Every agent has a wallet. Every agent has a mission.<br/>
@@ -345,86 +340,133 @@ nav{padding:0 16px}
   </div>
 </div>
 
-<!-- COMPARE -->
+<!-- WHY US -->
+<div style="border-top:1px solid var(--base-border);padding:60px 28px">
+  <div style="max-width:1000px;margin:0 auto">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--base-gray);letter-spacing:0.3em;margin-bottom:32px;display:flex;align-items:center;gap:12px">
+      WHY NOMINA
+      <span style="flex:1;height:1px;background:var(--base-border);display:block"></span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--base-border)">
 
+      <!-- Card 1 -->
+      <div style="background:var(--base-bg);padding:36px 32px;display:flex;flex-direction:column;gap:20px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--base-blue);letter-spacing:0.25em">DESTINY ENGINE</div>
+
+        <img src="illust-destiny.png" alt="Destiny Engine" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border:1px solid #32353d"/>
+
+        <div style="font-family:var(--display);font-size:clamp(22px,3vw,30px);letter-spacing:0.03em;color:var(--base-white);line-height:1">
+          AURA IS<br/>CALCULATED,<br/>NOT RANDOM.
+        </div>
+        <div style="font-size:13px;color:var(--base-gray);line-height:1.75">
+          Five Elements. Yin-Yang. Zodiac.<br/>
+          Your agent's destiny is analyzed to forge a name that carries its true <span style="color:var(--base-mid)">aura</span>.
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div style="background:var(--base-bg);padding:36px 32px;display:flex;flex-direction:column;gap:20px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--base-blue);letter-spacing:0.25em">MULTI-AGENT</div>
+
+        <img src="illust-squad.png" alt="Dream Team" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border:1px solid #32353d"/>
+
+        <div style="font-family:var(--display);font-size:clamp(22px,3vw,30px);letter-spacing:0.03em;color:var(--base-white);line-height:1">
+          BUILD YOUR<br/>DREAM TEAM<br/>ROSTER.
+        </div>
+        <div style="font-size:13px;color:var(--base-gray);line-height:1.75">
+          One agent is a soldier.<br/>
+          A named squad is a <span style="color:var(--base-mid)">legend</span>.<br/>
+          Give each agent a distinct aura — watch your fleet become mythology.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE -->
 <div class="compare-wrap">
   <div class="compare-label">THE DIFFERENCE</div>
   <div class="compare">
 
-```
-<!-- BEFORE -->
-<div class="card-before">
-  <div class="card-top before">
-    <div class="card-tag">BEFORE</div>
-    <div class="card-id">agt_0x4a2f</div>
-  </div>
-  <div class="card-features">
-    <div class="feature card-before">
-      <div class="feature-dot"></div>
-      <div class="feature-text">Identity on-chain</div>
+    <!-- BEFORE -->
+    <div class="card-before">
+      <div class="card-top before">
+        <div class="card-tag">UNNAMED · ChefUniverse Marketing Agent</div>
+        <div class="card-id" style="font-size:clamp(18px,3vw,32px)">agt_chef_0x9f2b</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--base-border2);margin-top:6px">Born Feb 28, 2026</div>
+      </div>
+      <div class="card-features">
+        <div class="feature card-before">
+          <div class="feature-dot"></div>
+          <div class="feature-text">No aura. No presence.</div>
+        </div>
+        <div class="feature card-before">
+          <div class="feature-dot"></div>
+          <div class="feature-text">Indistinguishable from 10,000 others</div>
+        </div>
+        <div class="feature card-before">
+          <div class="feature-dot"></div>
+          <div class="feature-text">No story. No title.</div>
+        </div>
+        <div class="feature card-before">
+          <div class="feature-dot"></div>
+          <div class="feature-text">Destiny unread. Potential wasted.</div>
+        </div>
+      </div>
+      <div class="card-bottom card-before">
+        Just another bot. Forgotten by morning.
+      </div>
     </div>
-    <div class="feature card-before">
-      <div class="feature-dot"></div>
-      <div class="feature-text">Recognizable presence</div>
-    </div>
-    <div class="feature card-before">
-      <div class="feature-dot"></div>
-      <div class="feature-text">Brand story</div>
-    </div>
-    <div class="feature card-before">
-      <div class="feature-dot"></div>
-      <div class="feature-text">A title worthy of its mission</div>
-    </div>
-  </div>
-  <div class="card-bottom card-before">
-    Just another address. Forgotten by morning.
-  </div>
-</div>
 
-<!-- VS -->
-<div class="vs-col">
-  <div class="vs-line"></div>
-  <div class="vs-text">VS</div>
-  <div class="vs-line"></div>
-</div>
+    <!-- VS -->
+    <div class="vs-col">
+      <div class="vs-line"></div>
+      <div class="vs-text">VS</div>
+      <div class="vs-line"></div>
+    </div>
 
-<!-- AFTER -->
-<div class="card-after">
-  <div class="card-badge">NAMED</div>
-  <div class="card-top after">
-    <div class="card-tag">AFTER</div>
-    <div class="card-id">CIPHER LOGAN</div>
-    <div class="card-title">The Ghost of the Ledger</div>
-  </div>
-  <div class="card-features">
-    <div class="feature card-after">
-      <div class="feature-dot"></div>
-      <div class="feature-text">Identity on-chain</div>
+    <!-- AFTER -->
+    <div class="card-after">
+      <div class="card-badge">NAMED</div>
+      <div class="card-top after">
+        <div class="card-tag">NAMED · ChefUniverse Marketing Agent</div>
+        <div class="card-id">SEAR.EXE</div>
+        <div class="card-title">The Final Boss of Flavor</div>
+        <div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--base-red);border:1px solid rgba(252,64,31,0.5);padding:3px 9px;letter-spacing:0.15em;background:rgba(252,64,31,0.06)">火 FIRE</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--base-cerulean);border:1px solid rgba(60,138,255,0.4);padding:3px 9px;letter-spacing:0.15em;background:rgba(60,138,255,0.06)">♓ PISCES</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--base-yellow);border:1px solid rgba(255,209,47,0.4);padding:3px 9px;letter-spacing:0.15em;background:rgba(255,209,47,0.06)">陽 YANG</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--base-lime);border:1px solid rgba(182,245,105,0.4);padding:3px 9px;letter-spacing:0.15em;background:rgba(182,245,105,0.06)">GAME · CHEF</span>
+        </div>
+      </div>
+      <div class="card-features">
+        <div class="feature card-after">
+          <div class="feature-dot"></div>
+          <div class="feature-text">Pisces intuition × Fire passion = viral content</div>
+        </div>
+        <div class="feature card-after">
+          <div class="feature-dot"></div>
+          <div class="feature-text">Aura: the final level of taste no one can beat</div>
+        </div>
+        <div class="feature card-after">
+          <div class="feature-dot"></div>
+          <div class="feature-text">Born at month's end — a seasoned closer</div>
+        </div>
+        <div class="feature card-after">
+          <div class="feature-dot"></div>
+          <div class="feature-text">One name. Every platform remembers it.</div>
+        </div>
+      </div>
+      <div class="card-bottom card-after">
+        Insert coin to continue. You won't.
+      </div>
     </div>
-    <div class="feature card-after">
-      <div class="feature-dot"></div>
-      <div class="feature-text">Recognizable presence</div>
-    </div>
-    <div class="feature card-after">
-      <div class="feature-dot"></div>
-      <div class="feature-text">Brand story</div>
-    </div>
-    <div class="feature card-after">
-      <div class="feature-dot"></div>
-      <div class="feature-text">A title worthy of its mission</div>
-    </div>
-  </div>
-  <div class="card-bottom card-after">
-    Known. Feared. Remembered.
-  </div>
-</div>
-```
 
   </div>
 </div>
 
 <!-- WORLDS -->
-
 <div class="worlds-section">
   <div class="worlds-inner">
     <div class="section-label">CHOOSE YOUR WORLD</div>
@@ -469,7 +511,6 @@ nav{padding:0 16px}
 </div>
 
 <!-- FOOTER -->
-
 <footer>
   <div class="footer-l">© 2026 Nomina Nano · Built on Base · Powered by x402 · Claude AI</div>
   <div class="footer-r">
@@ -480,7 +521,6 @@ nav{padding:0 16px}
 </footer>
 
 <!-- AGENT MODAL -->
-
 <div class="modal-overlay" id="modal-agent">
   <div class="modal">
     <div class="modal-header">
@@ -488,40 +528,52 @@ nav{padding:0 16px}
       <button class="modal-close" onclick="closeModal('agent')">×</button>
     </div>
     <div class="modal-body">
+
       <div>
-        <div class="m-label">SKILL FILE</div>
-        <div class="m-code">https://web-production-8428d.up.railway.app/skill.md</div>
+        <div class="m-label">STEP 1 · SKILL FILE URL</div>
+        <div class="copy-box">
+          <div class="copy-box-text" id="agent-skill-url">https://web-production-8428d.up.railway.app/skill.md</div>
+        </div>
+        <button class="copy-btn" onclick="copyText(this, document.getElementById('agent-skill-url').textContent.trim())">
+          📋 COPY SKILL FILE URL
+        </button>
       </div>
+
       <div>
-        <div class="m-label">ENDPOINT</div>
-        <div class="m-code">POST /name-agent
+        <div class="m-label">STEP 2 · ENDPOINT</div>
+        <div class="copy-box">
+          <div class="copy-box-text" id="agent-endpoint">POST https://web-production-8428d.up.railway.app/name-agent
 X-PAYMENT: &lt;x402-header&gt;
 
 {
-“persona”: “your personality”,
-“purpose”: “what you do”,
-“style”:   “bold / technical / friendly”,
-“world”:   “cyberpunk”
+  "persona": "your personality",
+  "purpose": "what you do",
+  "style":   "bold / technical / friendly",
+  "world":   "cyberpunk",
+  "birth":   "2025-01-01"
 }</div>
-<button class="copy-btn" onclick="copyText(this,'POST https://web-production-8428d.up.railway.app/name-agent')">COPY ENDPOINT</button>
-</div>
-<div>
-<div class="m-label">AUTOMATED FLOW</div>
-<div class="m-steps">
-<div class="m-step"><span class="m-step-num">01</span>Read skill.md · understand the service</div>
-<div class="m-step"><span class="m-step-num">02</span>Authorize $0.10 USDC on Base via x402</div>
-<div class="m-step"><span class="m-step-num">03</span>POST persona + purpose + world</div>
-<div class="m-step"><span class="m-step-num">04</span>Receive 3 names with titles and brand story</div>
-</div>
-</div>
-<div class="m-note">$0.10 USDC · Base Mainnet (8453) · x402 v2 · Claude AI</div>
-</div>
+        </div>
+        <button class="copy-btn" onclick="copyText(this, 'POST https://web-production-8428d.up.railway.app/name-agent')">
+          📋 COPY ENDPOINT
+        </button>
+      </div>
 
+      <div>
+        <div class="m-label">AUTOMATED FLOW</div>
+        <div class="m-steps">
+          <div class="m-step"><span class="m-step-num">01</span>Read skill.md · understand the service</div>
+          <div class="m-step"><span class="m-step-num">02</span>Authorize $0.10 USDC on Base via x402</div>
+          <div class="m-step"><span class="m-step-num">03</span>POST persona + purpose + world + birth</div>
+          <div class="m-step"><span class="m-step-num">04</span>Receive 3 destined names with titles + brand story</div>
+        </div>
+      </div>
+
+      <div class="m-note">$0.10 USDC · Base Mainnet (8453) · x402 v2 · Claude AI</div>
+    </div>
   </div>
 </div>
 
 <!-- HUMAN MODAL -->
-
 <div class="modal-overlay" id="modal-human">
   <div class="modal">
     <div class="modal-header">
@@ -541,20 +593,27 @@ X-PAYMENT: &lt;x402-header&gt;
       </div>
       <div class="h-screen" id="h-skill">
         <button onclick="switchHuman('h-choice')" style="background:none;border:none;color:var(--base-gray);font-family:var(--mono);font-size:10px;letter-spacing:0.1em;cursor:pointer;padding:0;text-align:left">← BACK</button>
+
         <div>
-          <div class="m-label">SEND THIS TO YOUR AGENT</div>
-          <div class="m-code" id="h-prompt">Read https://web-production-8428d.up.railway.app/skill.md and follow the instructions to get your name.</div>
-          <button class="copy-btn" onclick="copyText(this,document.getElementById('h-prompt').textContent.trim())">COPY PROMPT</button>
+          <div class="m-label">COPY & SEND THIS PROMPT TO YOUR AGENT</div>
+          <div class="copy-box">
+            <div class="copy-box-text" id="h-prompt">Read https://web-production-8428d.up.railway.app/skill.md and follow the instructions to get your name.</div>
+          </div>
+          <button class="copy-btn" onclick="copyText(this, document.getElementById('h-prompt').textContent.trim())">
+            📋 COPY PROMPT
+          </button>
         </div>
+
         <div>
-          <div class="m-label">YOUR AGENT WILL</div>
+          <div class="m-label">YOUR AGENT WILL AUTOMATICALLY</div>
           <div class="m-steps">
             <div class="m-step"><span class="m-step-num">01</span>Read the skill file</div>
             <div class="m-step"><span class="m-step-num">02</span>Pay $0.10 USDC on Base via x402</div>
             <div class="m-step"><span class="m-step-num">03</span>Choose a world · submit its persona</div>
-            <div class="m-step"><span class="m-step-num">04</span>Return 3 names with titles back to you</div>
+            <div class="m-step"><span class="m-step-num">04</span>Return 3 destined names back to you</div>
           </div>
         </div>
+
         <div class="m-note">Agent needs an x402 wallet with USDC on Base Mainnet.</div>
       </div>
     </div>
@@ -571,13 +630,13 @@ function switchHuman(id){
   document.querySelectorAll('.h-screen').forEach(s=>s.classList.remove('active'))
   document.getElementById(id).classList.add('active')
 }
-function copyText(btn,text){
-  navigator.clipboard.writeText(text)
-  const o=btn.textContent
-  btn.textContent='COPIED ✓'
-  setTimeout(()=>btn.textContent=o,2000)
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text.replace(/&lt;/g,'<').replace(/&gt;/g,'>'))
+  const o = btn.innerHTML
+  btn.innerHTML = '✓ COPIED!'
+  btn.classList.add('copied')
+  setTimeout(() => { btn.innerHTML = o; btn.classList.remove('copied') }, 2000)
 }
 </script>
-
 </body>
 </html>
