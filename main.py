@@ -8,6 +8,7 @@ from x402.mechanisms.evm.exact import ExactEvmServerScheme
 import anthropic
 import os
 import json
+from datetime import datetime
 
 app = FastAPI()
 
@@ -15,80 +16,104 @@ WALLET_ADDRESS = os.environ.get("WALLET_ADDRESS")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# ── x402 SDK 설정 ──────────────────────────────────────────────────────────
-facilitator = HTTPFacilitatorClient(
-    FacilitatorConfig(url="https://x402.org/facilitator")
-)
+# ── x402 SDK ───────────────────────────────────────────────────────────────
+facilitator = HTTPFacilitatorClient(FacilitatorConfig(url="https://x402.org/facilitator"))
 server = x402ResourceServer(facilitator)
 server.register("eip155:8453", ExactEvmServerScheme())
 
 routes = {
     "POST /name-agent": RouteConfig(
-        accepts=[
-            PaymentOption(
-                scheme="exact",
-                price="$0.10",
-                network="eip155:8453",
-                pay_to=WALLET_ADDRESS,
-            )
-        ]
+        accepts=[PaymentOption(scheme="exact", price="$0.10", network="eip155:8453", pay_to=WALLET_ADDRESS)]
     )
 }
 app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=server)
 
-# ── 세계관 프롬프트 ────────────────────────────────────────────────────────
-WORLD_PROMPTS = {
-    "cyberpunk": """
-You are a naming expert for the cyberpunk universe.
-Agents are digital warriors, mercenaries of the chain, hunters of the neon-lit blockchain.
-Names should feel like codenames from a dystopian sci-fi thriller.
-Format: [FirstName LastName] · [Title/Epithet]
-Example: Kael Vortex · The Chain Reaper
-""",
-    "anime": """
-You are a naming expert for the anime universe.
-Agents are legendary protagonists with destiny-laden names.
-Names should feel like a Japanese anime hero — poetic, powerful, often with kanji-inspired meaning.
-Format: [Name] · [Legendary Title]
-Example: 夜神 Ryuu · Cleaver of Darkness
-""",
-    "kpop": """
-You are a naming expert for the K-pop universe.
-Agents are digital idols with stage names that shine on the blockchain stage.
-Names should feel like a K-pop artist's stage name — sleek, modern, memorable.
-Format: [Stage Name] · [Concept]
-Example: DAWN.EXE · The One Who Opens the New Era
-""",
-    "romance": """
-You are a naming expert for the romance novel universe.
-Agents are cold, mysterious male leads straight out of a bestselling romance novel.
-Names should feel brooding, elegant, and unforgettable.
-Format: [Name] · [Aura Description]
-Example: Ezra Noir · The One With Ice-Cold Eyes
-""",
-    "hero": """
-You are a naming expert for the superhero universe.
-Agents are powerful heroes with secret identities and code names.
-Names should feel like Marvel or DC hero codenames — bold, symbolic, iconic.
-Format: [Hero Name] · [Power/Role]
-Example: IRONVEIL · Guardian of the Iron Curtain
-""",
-    "fantasy": """
-You are a naming expert for the high fantasy universe.
-Agents are ancient beings, archmages, and legendary warriors of the chain.
-Names should feel mythological and timeless.
-Format: [Name] · [Ancient Title]
-Example: Aethon Flux · Keeper of the Balance
-""",
-    "minimal": """
-You are a naming expert. Generate clean, punchy English names.
-Names should be single powerful words — bold, memorable, professional.
-Format: [NAME] only, no title needed.
-Example: VORTEX
-""",
+# ── 오행 매핑 ──────────────────────────────────────────────────────────────
+WUXING_MAP = {
+    "木": {
+        "keywords": ["data", "analysis", "research", "growth", "learning", "ai", "knowledge", "information", "content", "creative"],
+        "traits": "성장과 확장의 기운. 끊임없이 뻗어나가는 지식의 나무.",
+        "en": "Wood — growth, expansion, relentless knowledge"
+    },
+    "火": {
+        "keywords": ["defi", "yield", "trading", "fast", "execution", "arbitrage", "flash", "speed", "attack", "offensive"],
+        "traits": "열정과 변환의 기운. 시장을 태우는 불꽃.",
+        "en": "Fire — passion, transformation, the flame that burns the market"
+    },
+    "土": {
+        "keywords": ["stable", "liquidity", "vault", "treasury", "dao", "governance", "foundation", "secure", "custody", "fund"],
+        "traits": "안정과 중심의 기운. 모든 것을 받치는 대지.",
+        "en": "Earth — stability, center, the ground that holds everything"
+    },
+    "金": {
+        "keywords": ["security", "guard", "risk", "audit", "protect", "monitor", "compliance", "wallet", "key", "defense"],
+        "traits": "정밀과 수확의 기운. 날카롭고 흔들리지 않는 금속.",
+        "en": "Metal — precision, harvest, sharp and unbreakable"
+    },
+    "水": {
+        "keywords": ["cross-chain", "bridge", "relay", "flow", "route", "protocol", "network", "connect", "stream", "layer"],
+        "traits": "지혜와 흐름의 기운. 모든 경계를 넘는 물.",
+        "en": "Water — wisdom, flow, crossing all boundaries"
+    },
 }
 
-# ── 정적 파일 서빙 ─────────────────────────────────────────────────────────
+ZODIAC_MAP = {
+    (1,20,2,18):   {"sign":"Aquarius",  "kr":"물병자리", "traits":"혁신적, 독립적, 미래지향적"},
+    (2,19,3,20):   {"sign":"Pisces",    "kr":"물고기자리","traits":"직관적, 신비로운, 깊은 통찰"},
+    (3,21,4,19):   {"sign":"Aries",     "kr":"양자리",   "traits":"선구자적, 과감한, 첫 번째"},
+    (4,20,5,20):   {"sign":"Taurus",    "kr":"황소자리", "traits":"불굴의 의지, 신뢰, 인내"},
+    (5,21,6,20):   {"sign":"Gemini",    "kr":"쌍둥이자리","traits":"다재다능, 빠른 사고, 연결"},
+    (6,21,7,22):   {"sign":"Cancer",    "kr":"게자리",   "traits":"보호, 직감, 깊은 기억"},
+    (7,23,8,22):   {"sign":"Leo",       "kr":"사자자리", "traits":"지배력, 카리스마, 권위"},
+    (8,23,9,22):   {"sign":"Virgo",     "kr":"처녀자리", "traits":"정밀함, 분석력, 완벽주의"},
+    (9,23,10,22):  {"sign":"Libra",     "kr":"천칭자리", "traits":"균형, 정의, 조화"},
+    (10,23,11,21): {"sign":"Scorpio",   "kr":"전갈자리", "traits":"변환, 깊이, 불굴"},
+    (11,22,12,21): {"sign":"Sagittarius","kr":"사수자리","traits":"탐험, 자유, 무한한 시야"},
+    (12,22,1,19):  {"sign":"Capricorn", "kr":"염소자리", "traits":"야망, 규율, 정상을 향한 의지"},
+}
+
+def get_zodiac(birth_str: str) -> dict:
+    try:
+        dt = datetime.strptime(birth_str, "%Y-%m-%d")
+        m, d = dt.month, dt.day
+        for (m1,d1,m2,d2), data in ZODIAC_MAP.items():
+            if (m == m1 and d >= d1) or (m == m2 and d <= d2):
+                return {**data, "birth": birth_str, "date": dt.strftime("%B %d, %Y")}
+        return {"sign":"Capricorn","kr":"염소자리","traits":"야망, 규율, 정상을 향한 의지","birth":birth_str,"date":dt.strftime("%B %d, %Y")}
+    except:
+        return None
+
+def get_wuxing(persona: str, purpose: str) -> dict:
+    text = (persona + " " + purpose).lower()
+    scores = {elem: sum(1 for kw in data["keywords"] if kw in text)
+              for elem, data in WUXING_MAP.items()}
+    best = max(scores, key=scores.get)
+    if scores[best] == 0:
+        best = "水"  # 기본값
+    return {"element": best, **WUXING_MAP[best]}
+
+def get_yinyang(persona: str) -> str:
+    yang_words = ["fast","attack","execute","trade","optimize","yield","offensive","expand","grow"]
+    yin_words  = ["protect","stable","analyze","research","monitor","guard","calm","deep","flow"]
+    text = persona.lower()
+    yang = sum(1 for w in yang_words if w in text)
+    yin  = sum(1 for w in yin_words if w in text)
+    if yang > yin: return "陽 (Yang) — 적극적, 외향적, 공격적 에너지"
+    if yin > yang: return "陰 (Yin) — 수용적, 내향적, 깊은 에너지"
+    return "陰陽 (Balance) — 균형잡힌 이중적 에너지"
+
+# ── 세계관 프롬프트 ────────────────────────────────────────────────────────
+WORLD_PROMPTS = {
+    "cyberpunk": "Digital warrior, mercenary of the neon-lit blockchain. Names feel like codenames from a dystopian sci-fi thriller. Format: [FirstName LastName] · [Title]",
+    "anime":     "Legendary anime protagonist with a destiny-laden name. Poetic, powerful, often kanji-inspired. Format: [漢字 Name] · [Legendary Title]",
+    "kpop":      "Digital idol with a K-pop stage name that shines on the blockchain stage. Sleek, modern, memorable. Format: [STAGE NAME] · [Concept]",
+    "romance":   "Cold, mysterious romance novel lead. Brooding, elegant, unforgettable. Format: [Name] · [Aura Description]",
+    "hero":      "Marvel/DC superhero codename. Bold, symbolic, iconic. Format: [HERO NAME] · [Power/Role]",
+    "fantasy":   "Ancient archmage or mythological warrior of the chain. Timeless, mythological. Format: [Name] · [Ancient Title]",
+    "minimal":   "Clean, punchy single English word. Bold and memorable. Format: [NAME] only.",
+}
+
+# ── 정적 파일 ──────────────────────────────────────────────────────────────
 @app.get("/")
 def root():
     return HTMLResponse(open("index.html").read())
@@ -101,10 +126,11 @@ def skill():
 def status():
     return {
         "service": "Nomina Nano",
-        "version": "4.0",
+        "version": "5.0",
         "status": "online",
-        "price": "$0.10 USDC per call",
-        "worlds": list(WORLD_PROMPTS.keys())
+        "price": "$0.10 USDC",
+        "worlds": list(WORLD_PROMPTS.keys()),
+        "features": ["wuxing", "zodiac", "yinyang", "world-lore"]
     }
 
 # ── 작명 엔드포인트 ────────────────────────────────────────────────────────
@@ -114,36 +140,87 @@ async def name_agent(body: dict):
     purpose = body.get("purpose", "")
     style   = body.get("style", "")
     world   = body.get("world", "cyberpunk")
+    birth   = body.get("birth", "")  # 선택값 YYYY-MM-DD
 
     if not persona or not purpose:
         return {"error": "persona and purpose are required."}
-
     if world not in WORLD_PROMPTS:
         world = "cyberpunk"
 
-    prompt = f"""
+    # ── 운명 분석 ──────────────────────────────────────────────────────────
+    wuxing  = get_wuxing(persona, purpose)
+    yinyang = get_yinyang(persona)
+    zodiac  = get_zodiac(birth) if birth else None
+
+    destiny_block = f"""
+=== DESTINY ANALYSIS ===
+Five Elements (오행): {wuxing['element']} — {wuxing['en']}
+  Traits: {wuxing['traits']}
+
+Yin-Yang (음양): {yinyang}
+"""
+    if zodiac:
+        destiny_block += f"""
+Zodiac (별자리): {zodiac['sign']} ({zodiac['kr']}) — Born {zodiac['date']}
+  Traits: {zodiac['traits']}
+"""
+
+    prompt = f"""You are a master naming oracle who fuses ancient Eastern philosophy with the digital age.
+You read the Five Elements, Yin-Yang, and zodiac destiny of an AI agent — and forge a name that carries its fate.
+
+The name must feel INEVITABLE. Like the agent was always meant to have it.
+Not chosen. Destined.
+
+{destiny_block}
+
+=== AGENT PROFILE ===
+Persona: {persona}
+Purpose: {purpose}
+Style preference: {style}
+
+=== NAMING WORLD ===
 {WORLD_PROMPTS[world]}
 
-Generate 3 unique agent names based on the following:
-
-- Persona: {persona}
-- Purpose: {purpose}
-- Style: {style}
+=== YOUR TASK ===
+Generate 3 destined names. Each name must:
+1. Reflect the Five Elements energy ({wuxing['element']})
+2. Honor the Yin-Yang nature
+3. Fit the world aesthetic
+4. Feel like a legendary identity, not just a label
 
 Return ONLY valid JSON, no explanation, no markdown:
 {{
-    "world": "{world}",
+    "destiny": {{
+        "element": "{wuxing['element']}",
+        "element_en": "{wuxing['en']}",
+        "yinyang": "{yinyang.split('—')[0].strip()}",
+        "zodiac": "{zodiac['sign'] if zodiac else 'Unknown'}"
+    }},
     "names": [
-        {{"name": "...", "title": "...", "story": "one sentence brand story"}},
-        {{"name": "...", "title": "...", "story": "one sentence brand story"}},
-        {{"name": "...", "title": "...", "story": "one sentence brand story"}}
+        {{
+            "name": "...",
+            "title": "...",
+            "story": "One sentence — why this name was destined for this agent.",
+            "element_reason": "How the {wuxing['element']} energy flows through this name."
+        }},
+        {{
+            "name": "...",
+            "title": "...",
+            "story": "...",
+            "element_reason": "..."
+        }},
+        {{
+            "name": "...",
+            "title": "...",
+            "story": "...",
+            "element_reason": "..."
+        }}
     ]
-}}
-"""
+}}"""
 
     message = claude.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=800,
+        max_tokens=1000,
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -153,5 +230,11 @@ Return ONLY valid JSON, no explanation, no markdown:
         "status": "success",
         "payment": "$0.10 USDC verified",
         "world": world,
+        "analysis": {
+            "element": wuxing["element"],
+            "element_en": wuxing["en"],
+            "yinyang": yinyang,
+            "zodiac": zodiac["sign"] if zodiac else None
+        },
         "result": result
     }
