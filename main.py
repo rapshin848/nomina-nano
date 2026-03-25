@@ -44,24 +44,38 @@ class CDPFacilitatorClient(HTTPFacilitatorClient):
         return _Supported()
 
     async def verify(self, payload, requirements):
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                f"{self._base_url}/verify",
-                json={"paymentPayload": payload, "paymentRequirements": requirements},
-                headers={"Content-Type": "application/json", "Authorization": self._auth_header},
-                timeout=10,
-            )
-            return resp.json()
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            f"{self._base_url}/verify",
+            json={"paymentPayload": payload, "paymentRequirements": requirements},
+            headers={"Content-Type": "application/json", "Authorization": self._auth_header},
+            timeout=10,
+        )
+        data = resp.json()
+        class _VerifyResult:
+            def __init__(self, d):
+                self.is_valid = d.get("isValid", False)
+                self.payer = d.get("payer", "")
+                self.error = d.get("error", "")
+                self.invalid_reason = d.get("invalidReason", "")
+        return _VerifyResult(data)
+
 
     async def settle(self, payload, requirements):
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                f"{self._base_url}/settle",
-                json={"paymentPayload": payload, "paymentRequirements": requirements},
-                headers={"Content-Type": "application/json", "Authorization": self._auth_header},
-                timeout=10,
-            )
-            return resp.json()
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            f"{self._base_url}/settle",
+            json={"paymentPayload": payload, "paymentRequirements": requirements},
+            headers={"Content-Type": "application/json", "Authorization": self._auth_header},
+            timeout=10,
+        )
+        data = resp.json()
+        class _SettleResult:
+            def __init__(self, d):
+                self.success = d.get("success", False)
+                self.transaction_hash = d.get("txHash", "")
+                self.error = d.get("error", "")
+        return _SettleResult(data)
 
 if CDP_API_KEY_NAME and CDP_PRIVATE_KEY:
     facilitator = CDPFacilitatorClient(
