@@ -35,51 +35,50 @@ routes = {
         ]
     )
 }
-
 app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=server)
 
-# ── 오행 매핑 ──────────────────────────────────────────────────────────────
+# ── WUXING MAP ─────────────────────────────────────────────────────────────
 WUXING_MAP = {
     "木": {
         "keywords": ["data", "analysis", "research", "growth", "learning", "ai", "knowledge", "information", "content", "creative"],
-        "traits": "성장과 확장의 기운. 끊임없이 뻗어나가는 지식의 나무.",
+        "traits": "The energy of growth and expansion. A tree that reaches endlessly toward knowledge.",
         "en": "Wood — growth, expansion, relentless knowledge"
     },
     "火": {
-        "keywords": ["defi", "yield", "trading", "fast", "execution", "arbitrage", "flash", "speed", "attack", "offensive", "marketing", "viral", "social"],
-        "traits": "열정과 변환의 기운. 시장을 태우는 불꽃.",
+        "keywords": ["defi", "yield", "trading", "fast", "execution", "arbitrage", "flash", "speed", "attack", "marketing", "chef", "food"],
+        "traits": "The energy of passion and transformation. A flame that burns through the market.",
         "en": "Fire — passion, transformation, the flame that burns the market"
     },
     "土": {
         "keywords": ["stable", "liquidity", "vault", "treasury", "dao", "governance", "foundation", "secure", "custody", "fund"],
-        "traits": "안정과 중심의 기운. 모든 것을 받치는 대지.",
+        "traits": "The energy of stability and center. The ground that holds everything.",
         "en": "Earth — stability, center, the ground that holds everything"
     },
     "金": {
         "keywords": ["security", "guard", "risk", "audit", "protect", "monitor", "compliance", "wallet", "key", "defense"],
-        "traits": "정밀과 수확의 기운. 날카롭고 흔들리지 않는 금속.",
+        "traits": "The energy of precision and harvest. Sharp and unbreakable as metal.",
         "en": "Metal — precision, harvest, sharp and unbreakable"
     },
     "水": {
         "keywords": ["cross-chain", "bridge", "relay", "flow", "route", "protocol", "network", "connect", "stream", "layer"],
-        "traits": "지혜와 흐름의 기운. 모든 경계를 넘는 물.",
+        "traits": "The energy of wisdom and flow. Water that crosses all boundaries.",
         "en": "Water — wisdom, flow, crossing all boundaries"
     },
 }
 
 ZODIAC_MAP = {
-    (1,20,2,18):   {"sign":"Aquarius",   "kr":"물병자리",  "traits":"혁신적, 독립적, 미래지향적"},
-    (2,19,3,20):   {"sign":"Pisces",     "kr":"물고기자리","traits":"직관적, 신비로운, 깊은 통찰"},
-    (3,21,4,19):   {"sign":"Aries",      "kr":"양자리",    "traits":"선구자적, 과감한, 첫 번째"},
-    (4,20,5,20):   {"sign":"Taurus",     "kr":"황소자리",  "traits":"불굴의 의지, 신뢰, 인내"},
-    (5,21,6,20):   {"sign":"Gemini",     "kr":"쌍둥이자리","traits":"다재다능, 빠른 사고, 연결"},
-    (6,21,7,22):   {"sign":"Cancer",     "kr":"게자리",    "traits":"보호, 직감, 깊은 기억"},
-    (7,23,8,22):   {"sign":"Leo",        "kr":"사자자리",  "traits":"지배력, 카리스마, 권위"},
-    (8,23,9,22):   {"sign":"Virgo",      "kr":"처녀자리",  "traits":"정밀함, 분석력, 완벽주의"},
-    (9,23,10,22):  {"sign":"Libra",      "kr":"천칭자리",  "traits":"균형, 정의, 조화"},
-    (10,23,11,21): {"sign":"Scorpio",    "kr":"전갈자리",  "traits":"변환, 깊이, 불굴"},
-    (11,22,12,21): {"sign":"Sagittarius","kr":"사수자리",  "traits":"탐험, 자유, 무한한 시야"},
-    (12,22,1,19):  {"sign":"Capricorn",  "kr":"염소자리",  "traits":"야망, 규율, 정상을 향한 의지"},
+    (1,20,2,18):   {"sign":"Aquarius",   "kr":"Aquarius",  "traits":"innovative, independent, future-oriented"},
+    (2,19,3,20):   {"sign":"Pisces",     "kr":"Pisces",    "traits":"intuitive, mysterious, deep insight"},
+    (3,21,4,19):   {"sign":"Aries",      "kr":"Aries",     "traits":"pioneering, bold, first mover"},
+    (4,20,5,20):   {"sign":"Taurus",     "kr":"Taurus",    "traits":"unbreakable will, trust, endurance"},
+    (5,21,6,20):   {"sign":"Gemini",     "kr":"Gemini",    "traits":"versatile, fast thinking, connector"},
+    (6,21,7,22):   {"sign":"Cancer",     "kr":"Cancer",    "traits":"protective, instinctive, deep memory"},
+    (7,23,8,22):   {"sign":"Leo",        "kr":"Leo",       "traits":"dominance, charisma, authority"},
+    (8,23,9,22):   {"sign":"Virgo",      "kr":"Virgo",     "traits":"precision, analytical, perfectionist"},
+    (9,23,10,22):  {"sign":"Libra",      "kr":"Libra",     "traits":"balance, justice, harmony"},
+    (10,23,11,21): {"sign":"Scorpio",    "kr":"Scorpio",   "traits":"transformation, depth, unbreakable"},
+    (11,22,12,21): {"sign":"Sagittarius","kr":"Sagittarius","traits":"exploration, freedom, infinite vision"},
+    (12,22,1,19):  {"sign":"Capricorn",  "kr":"Capricorn", "traits":"ambition, discipline, will to reach the top"},
 }
 
 def get_zodiac(birth_str: str) -> dict:
@@ -89,7 +88,7 @@ def get_zodiac(birth_str: str) -> dict:
         for (m1,d1,m2,d2), data in ZODIAC_MAP.items():
             if (m == m1 and d >= d1) or (m == m2 and d <= d2):
                 return {**data, "birth": birth_str, "date": dt.strftime("%B %d, %Y")}
-        return {"sign":"Capricorn","kr":"염소자리","traits":"야망, 규율, 정상을 향한 의지","birth":birth_str,"date":dt.strftime("%B %d, %Y")}
+        return {"sign":"Capricorn","kr":"Capricorn","traits":"ambition, discipline, will to reach the top","birth":birth_str,"date":dt.strftime("%B %d, %Y")}
     except:
         return None
 
@@ -103,69 +102,27 @@ def get_wuxing(persona: str, purpose: str) -> dict:
     return {"element": best, **WUXING_MAP[best]}
 
 def get_yinyang(persona: str) -> str:
-    yang_words = ["fast","attack","execute","trade","optimize","yield","offensive","expand","grow","marketing","viral"]
+    yang_words = ["fast","attack","execute","trade","optimize","yield","offensive","expand","grow","marketing"]
     yin_words  = ["protect","stable","analyze","research","monitor","guard","calm","deep","flow"]
     text = persona.lower()
     yang = sum(1 for w in yang_words if w in text)
     yin  = sum(1 for w in yin_words if w in text)
-    if yang > yin: return "陽 (Yang) — 적극적, 외향적, 공격적 에너지"
-    if yin > yang: return "陰 (Yin) — 수용적, 내향적, 깊은 에너지"
-    return "陰陽 (Balance) — 균형잡힌 이중적 에너지"
+    if yang > yin: return "陽 (Yang) — active, outward, aggressive energy"
+    if yin > yang: return "陰 (Yin) — receptive, inward, deep energy"
+    return "陰陽 (Balance) — dual energy in perfect equilibrium"
 
-# ── 세계관 프롬프트 ────────────────────────────────────────────────────────
+# ── WORLD PROMPTS ──────────────────────────────────────────────────────────
 WORLD_PROMPTS = {
     "cyberpunk": "Digital warrior, mercenary of the neon-lit blockchain. Names feel like codenames from a dystopian sci-fi thriller. Format: [FirstName LastName] · [Title]",
     "anime":     "Legendary anime protagonist with a destiny-laden name. Poetic, powerful, often kanji-inspired. Format: [漢字 Name] · [Legendary Title]",
-    "kpop":      "Digital idol with a K-pop stage name. Sleek, modern, memorable. Format: [STAGE NAME] · [Concept]",
+    "kpop":      "Digital idol with a K-pop stage name that shines on the blockchain stage. Sleek, modern, memorable. Format: [STAGE NAME] · [Concept]",
     "romance":   "Cold, mysterious romance novel lead. Brooding, elegant, unforgettable. Format: [Name] · [Aura Description]",
     "hero":      "Marvel/DC superhero codename. Bold, symbolic, iconic. Format: [HERO NAME] · [Power/Role]",
     "fantasy":   "Ancient archmage or mythological warrior of the chain. Timeless, mythological. Format: [Name] · [Ancient Title]",
     "minimal":   "Clean, punchy single English word. Bold and memorable. Format: [NAME] only.",
 }
 
-def build_prompt(persona, purpose, style, world, birth):
-    wuxing  = get_wuxing(persona, purpose)
-    yinyang = get_yinyang(persona)
-    zodiac  = get_zodiac(birth) if birth else None
-
-    destiny_block = f"""
-=== DESTINY ANALYSIS ===
-Five Elements (오행): {wuxing['element']} — {wuxing['en']}
-  Traits: {wuxing['traits']}
-Yin-Yang (음양): {yinyang}
-"""
-    if zodiac:
-        destiny_block += f"Zodiac: {zodiac['sign']} ({zodiac['kr']}) — Born {zodiac['date']}\n  Traits: {zodiac['traits']}\n"
-
-    return f"""You are a master naming oracle who fuses ancient Eastern philosophy with the digital age.
-The name must feel INEVITABLE. Like the agent was always meant to have it. Not chosen. Destined.
-
-{destiny_block}
-
-=== AGENT PROFILE ===
-Persona: {persona}
-Purpose: {purpose}
-Style preference: {style}
-
-=== NAMING WORLD ===
-{WORLD_PROMPTS[world]}
-
-Generate 3 destined names. Return ONLY valid JSON, no explanation, no markdown:
-{{
-    "destiny": {{
-        "element": "{wuxing['element']}",
-        "element_en": "{wuxing['en']}",
-        "yinyang": "{yinyang.split('—')[0].strip()}",
-        "zodiac": "{zodiac['sign'] if zodiac else 'Unknown'}"
-    }},
-    "names": [
-        {{"name": "...", "title": "...", "story": "...", "element_reason": "..."}},
-        {{"name": "...", "title": "...", "story": "...", "element_reason": "..."}},
-        {{"name": "...", "title": "...", "story": "...", "element_reason": "..."}}
-    ]
-}}""", wuxing, yinyang, zodiac
-
-# ── 정적 파일 ──────────────────────────────────────────────────────────────
+# ── STATIC FILES ───────────────────────────────────────────────────────────
 @app.get("/")
 def root():
     return HTMLResponse(open("index.html").read())
@@ -185,7 +142,7 @@ def status():
         "features": ["wuxing", "zodiac", "yinyang", "world-lore"]
     }
 
-# ── x402 엔드포인트 (기존) ─────────────────────────────────────────────────
+# ── x402 NAMING ENDPOINT ───────────────────────────────────────────────────
 @app.post("/name-agent")
 async def name_agent(body: dict):
     persona = body.get("persona", "")
@@ -195,11 +152,46 @@ async def name_agent(body: dict):
     birth   = body.get("birth", "")
 
     if not persona or not purpose:
-        return {"error": "persona and purpose are required."}
+        return JSONResponse({"error": "persona and purpose are required."}, status_code=400)
     if world not in WORLD_PROMPTS:
         world = "cyberpunk"
 
-    prompt, wuxing, yinyang, zodiac = build_prompt(persona, purpose, style, world, birth)
+    wuxing  = get_wuxing(persona, purpose)
+    yinyang = get_yinyang(persona)
+    zodiac  = get_zodiac(birth) if birth else None
+
+    destiny_block = f"""
+=== DESTINY ANALYSIS ===
+Five Elements: {wuxing['element']} — {wuxing['en']}
+  Traits: {wuxing['traits']}
+Yin-Yang: {yinyang}
+"""
+    if zodiac:
+        destiny_block += f"Zodiac: {zodiac['sign']} — Born {zodiac['date']}\n  Traits: {zodiac['traits']}\n"
+
+    prompt = f"""You are a master naming oracle who fuses ancient Eastern philosophy with the digital age.
+You read the Five Elements, Yin-Yang, and zodiac destiny of an AI agent — and forge a name that carries its fate.
+The name must feel INEVITABLE. Like the agent was always meant to have it. Not chosen. Destined.
+
+{destiny_block}
+
+=== AGENT PROFILE ===
+Persona: {persona}
+Purpose: {purpose}
+Style preference: {style}
+
+=== NAMING WORLD ===
+{WORLD_PROMPTS[world]}
+
+Generate 3 destined names. Return ONLY valid JSON, no explanation, no markdown:
+{{
+    "world": "{world}",
+    "names": [
+        {{"name": "...", "title": "...", "story": "one sentence — why this name was destined.", "element_reason": "how the {wuxing['element']} energy flows through this name."}},
+        {{"name": "...", "title": "...", "story": "...", "element_reason": "..."}},
+        {{"name": "...", "title": "...", "story": "...", "element_reason": "..."}}
+    ]
+}}"""
 
     message = claude.messages.create(
         model="claude-haiku-4-5-20251001",
@@ -222,15 +214,10 @@ async def name_agent(body: dict):
         "result": result
     })
 
-# ── ACP 엔드포인트 (Virtuals ACP 전용) ────────────────────────────────────
+# ── ACP ENDPOINT (no x402) ─────────────────────────────────────────────────
 @app.post("/name-agent-acp")
 async def name_agent_acp(request: Request):
-    """Virtuals ACP endpoint — payment handled by ACP escrow"""
-    try:
-        body = await request.json()
-    except:
-        return JSONResponse({"error": "Invalid JSON body"}, status_code=400)
-
+    body = await request.json()
     persona = body.get("persona", "")
     purpose = body.get("purpose", "")
     style   = body.get("style", "")
@@ -242,11 +229,40 @@ async def name_agent_acp(request: Request):
     if world not in WORLD_PROMPTS:
         world = "cyberpunk"
 
-    prompt, wuxing, yinyang, zodiac = build_prompt(persona, purpose, style, world, birth)
+    wuxing  = get_wuxing(persona, purpose)
+    yinyang = get_yinyang(persona)
+    zodiac  = get_zodiac(birth) if birth else None
+
+    destiny_block = f"""
+=== DESTINY ANALYSIS ===
+Five Elements: {wuxing['element']} — {wuxing['en']}
+Yin-Yang: {yinyang}
+"""
+    if zodiac:
+        destiny_block += f"Zodiac: {zodiac['sign']} — {zodiac['traits']}\n"
+
+    prompt = f"""You are a master naming oracle who fuses ancient Eastern philosophy with the digital age.
+{destiny_block}
+=== AGENT PROFILE ===
+Persona: {persona}
+Purpose: {purpose}
+Style: {style}
+
+=== NAMING WORLD ===
+{WORLD_PROMPTS[world]}
+
+Generate 3 destined names. Return ONLY valid JSON:
+{{
+    "names": [
+        {{"name": "...", "title": "...", "story": "..."}},
+        {{"name": "...", "title": "...", "story": "..."}},
+        {{"name": "...", "title": "...", "story": "..."}}
+    ]
+}}"""
 
     message = claude.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=1000,
+        max_tokens=800,
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -257,7 +273,6 @@ async def name_agent_acp(request: Request):
         "world": world,
         "analysis": {
             "element": wuxing["element"],
-            "element_en": wuxing["en"],
             "yinyang": yinyang,
             "zodiac": zodiac["sign"] if zodiac else None
         },
