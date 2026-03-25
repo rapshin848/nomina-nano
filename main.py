@@ -33,14 +33,17 @@ class CDPFacilitatorClient(HTTPFacilitatorClient):
         self._base_url = config.url
 
     # SYNC — called by server_base.initialize()
-    def get_supported(self):
-        resp = req_sync.get(
-            f"{self._base_url}/supported",
-            headers={"Authorization": self._auth_header},
-            timeout=10,
-        )
-        resp.raise_for_status()
-        return resp.json()
+def get_supported(self):
+    # CDP /supported requires JWT — hardcode known Base mainnet support
+    class SupportedKind:
+        def __init__(self, scheme, network):
+            self.scheme = scheme
+            self.network = network
+
+    class SupportedResponse:
+        kinds = [SupportedKind("exact", "eip155:8453")]
+
+    return SupportedResponse()
 
     # ASYNC — called during request handling
     async def verify(self, payload, requirements):
