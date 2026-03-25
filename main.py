@@ -1,7 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi_x402 import init_x402, pay
+from x402.http.middleware.fastapi import PaymentMiddlewareASGI
+from x402.http import HTTPFacilitatorClient, FacilitatorConfig, PaymentOption
+from x402.http.types import RouteConfig
+from x402.server import x402ResourceServer
+from x402.mechanisms.evm.exact import ExactEvmServerScheme
 import anthropic
 import os
 import json
@@ -12,19 +16,31 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 
 WALLET_ADDRESS    = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-CDP_API_KEY_ID    = os.environ.get("CDP_API_KEY_ID")
-CDP_API_KEY_SECRET= os.environ.get("CDP_API_KEY_SECRET")
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# ── x402 (Base Mainnet) ────────────────────────────────────────────────────
-init_x402(
-    app,
-    pay_to=WALLET_ADDRESS,
-    network="base"
+# x402 (Base Mainnet via CDP Facilitator)
+facilitator = HTTPFacilitatorClient(
+    FacilitatorConfig(url="https://api.cdp.coinbase.com/platform/v2/x402")
 )
+server = x402ResourceServer(facilitator)
+server.register("eip155:8453", ExactEvmServerScheme())
 
-# ── WUXING MAP ─────────────────────────────────────────────────────────────
+routes = {
+    "POST /name-agent": RouteConfig(
+        accepts=[
+            PaymentOption(
+                scheme="exact",
+                price="0.10",
+                network="eip155:8453",
+                pay_to=WALLET_ADDRESS,
+            )
+        ]
+    )
+}
+app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=server)
+
+# WUXING MAP
 WUXING_MAP = {
     "木": {
         "keywords": ["data", "analysis", "research", "growth", "learning", "ai", "knowledge", "information", "content", "creative"],
@@ -98,7 +114,6 @@ def get_yinyang(persona: str) -> str:
     if yin > yang: return "陰 (Yin) — receptive, inward, deep energy"
     return "陰陽 (Balance) — dual energy in perfect equilibrium"
 
-# ── WORLD PROMPTS ──────────────────────────────────────────────────────────
 WORLD_PROMPTS = {
     "cyberpunk": "Digital warrior, mercenary of the neon-lit blockchain. Names feel like codenames from a dystopian sci-fi thriller. Format: [FirstName LastName] · [Title]",
     "anime":     "Legendary anime protagonist with a destiny-laden name. Poetic, powerful, often kanji-inspired. Format: [漢字 Name] · [Legendary Title]",
@@ -109,7 +124,7 @@ WORLD_PROMPTS = {
     "minimal":   "Clean, punchy single English word. Bold and memorable. Format: [NAME] only.",
 }
 
-# ── STATIC FILES ───────────────────────────────────────────────────────────
+# STATIC FILES
 @app.get("/")
 def root():
     return HTMLResponse(open("index.html").read())
@@ -129,9 +144,8 @@ def status():
         "features": ["wuxing", "zodiac", "yinyang", "world-lore"]
     }
 
-# ── x402 NAMING ENDPOINT ───────────────────────────────────────────────────
+# x402 NAMING ENDPOINT
 @app.post("/name-agent")
-@pay("$0.10")
 async def name_agent(body: dict):
     persona = body.get("persona", "")
     purpose = body.get("purpose", "")
@@ -202,7 +216,7 @@ Generate 3 destined names. Return ONLY valid JSON, no explanation, no markdown:
         "result": result
     })
 
-# ── ACP ENDPOINT (no x402) ─────────────────────────────────────────────────
+# ACP ENDPOINT (no x402)
 @app.post("/name-agent-acp")
 async def name_agent_acp(request: Request):
     body = await request.json()
