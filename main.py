@@ -1,12 +1,7 @@
-from fastapi import FastAPI, Request
+ffrom fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from x402.http.middleware.fastapi import PaymentMiddlewareASGI
-from x402.http import PaymentOption
-from x402.http.types import RouteConfig
-from x402.server import x402ResourceServer
-from x402.mechanisms.evm.exact import ExactEvmServerScheme
-from x402.facilitators.cdp import CdpFacilitatorClient
+from fastapi_x402 import init_x402, pay
 import anthropic
 import os
 import json
@@ -15,34 +10,21 @@ from datetime import datetime
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-WALLET_ADDRESS     = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
-ANTHROPIC_API_KEY  = os.environ.get("ANTHROPIC_API_KEY")
-CDP_API_KEY_ID     = os.environ.get("CDP_API_KEY_ID")
-CDP_API_KEY_SECRET = os.environ.get("CDP_API_KEY_SECRET")
+WALLET_ADDRESS    = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+CDP_API_KEY_ID    = os.environ.get("CDP_API_KEY_ID")
+CDP_API_KEY_SECRET= os.environ.get("CDP_API_KEY_SECRET")
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# ── CDP Facilitator (Base Mainnet) ─────────────────────────────────────────
-facilitator = CdpFacilitatorClient(
-    api_key_id=CDP_API_KEY_ID,
-    api_key_secret=CDP_API_KEY_SECRET
+# ── x402 (Base Mainnet) ────────────────────────────────────────────────────
+init_x402(
+    app,
+    pay_to=WALLET_ADDRESS,
+    network="base",
+    cdp_api_key_id=CDP_API_KEY_ID,
+    cdp_api_key_secret=CDP_API_KEY_SECRET
 )
-server = x402ResourceServer(facilitator)
-server.register("eip155:8453", ExactEvmServerScheme())
-
-routes = {
-    "POST /name-agent": RouteConfig(
-        accepts=[
-            PaymentOption(
-                scheme="exact",
-                price="0.10",
-                network="eip155:8453",
-                pay_to=WALLET_ADDRESS,
-            )
-        ]
-    )
-}
-app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=server)
 
 # ── WUXING MAP ─────────────────────────────────────────────────────────────
 WUXING_MAP = {
@@ -151,6 +133,7 @@ def status():
 
 # ── x402 NAMING ENDPOINT ───────────────────────────────────────────────────
 @app.post("/name-agent")
+@pay("$0.10")
 async def name_agent(body: dict):
     persona = body.get("persona", "")
     purpose = body.get("purpose", "")
