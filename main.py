@@ -11,6 +11,7 @@ import os
 import json
 import base64
 import httpx
+import requests as req_sync
 from datetime import datetime
 
 app = FastAPI()
@@ -23,17 +24,29 @@ CDP_PRIVATE_KEY   = os.environ.get("CDP_API_KEY_PRIVATE_KEY")
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# CDP Auth Facilitator
+# CDP Auth Facilitator — sync get_supported, async verify/settle
 class CDPFacilitatorClient(HTTPFacilitatorClient):
     def __init__(self, config: FacilitatorConfig, api_key_name: str, api_key_secret: str):
         super().__init__(config)
         credentials = base64.b64encode(f"{api_key_name}:{api_key_secret}".encode()).decode()
         self._auth_header = f"Basic {credentials}"
+        self._base_url = config.url
 
+    # SYNC — called by server_base.initialize()
+    def get_supported(self):
+        resp = req_sync.get(
+            f"{self._base_url}/supported",
+            headers={"Authorization": self._auth_header},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    # ASYNC — called during request handling
     async def verify(self, payload, requirements):
         async with httpx.AsyncClient() as client:
             resp = await client.post(
-                f"{self._config.url}/verify",
+                f"{self._base_url}/verify",
                 json={"paymentPayload": payload, "paymentRequirements": requirements},
                 headers={"Content-Type": "application/json", "Authorization": self._auth_header},
                 timeout=10,
@@ -43,18 +56,9 @@ class CDPFacilitatorClient(HTTPFacilitatorClient):
     async def settle(self, payload, requirements):
         async with httpx.AsyncClient() as client:
             resp = await client.post(
-                f"{self._config.url}/settle",
+                f"{self._base_url}/settle",
                 json={"paymentPayload": payload, "paymentRequirements": requirements},
                 headers={"Content-Type": "application/json", "Authorization": self._auth_header},
-                timeout=10,
-            )
-            return resp.json()
-
-    async def get_supported(self):
-        async with httpx.AsyncClient() as client:
-            resp = await client.get(
-                f"{self._config.url}/supported",
-                headers={"Authorization": self._auth_header},
                 timeout=10,
             )
             return resp.json()
