@@ -2,3 +2,4 @@ fastapi
 uvicorn
 anthropic
 x402[fastapi,evm]
+httpx
