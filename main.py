@@ -21,9 +21,7 @@ claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 init_x402(
     app,
     pay_to=WALLET_ADDRESS,
-    network="base",
-    cdp_api_key_id=CDP_API_KEY_ID,
-    cdp_api_key_secret=CDP_API_KEY_SECRET
+    network="base"
 )
 
 # ── WUXING MAP ─────────────────────────────────────────────────────────────
