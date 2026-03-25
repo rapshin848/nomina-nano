@@ -129,7 +129,8 @@ def status():
 # x402 NAMING ENDPOINT
 @app.post("/name-agent")
 @pay("$0.10")
-async def name_agent(body: dict):
+async def name_agent(request: Request):
+    body = await request.json()
     persona = body.get("persona", "")
     purpose = body.get("purpose", "")
     style   = body.get("style", "")
