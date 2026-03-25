@@ -1,26 +1,56 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi_x402 import init_x402, pay
+from x402.http.middleware.fastapi import PaymentMiddlewareASGI
+from x402.http import HTTPFacilitatorClient, FacilitatorConfig, PaymentOption
+from x402.http.types import RouteConfig
+from x402.server import x402ResourceServer
+from x402.mechanisms.evm.exact import ExactEvmServerScheme
 import anthropic
 import os
 import json
+import base64
 from datetime import datetime
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-WALLET_ADDRESS    = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+WALLET_ADDRESS     = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
+ANTHROPIC_API_KEY  = os.environ.get("ANTHROPIC_API_KEY")
+CDP_API_KEY_NAME   = os.environ.get("CDP_API_KEY_NAME")
+CDP_PRIVATE_KEY    = os.environ.get("CDP_API_KEY_PRIVATE_KEY")
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# x402 (Base Mainnet — CDP 키는 환경변수에서 자동으로 읽음)
-init_x402(
-    app,
-    pay_to=WALLET_ADDRESS,
-    network="base"
-)
+# x402 — CDP Facilitator (Base Mainnet)
+if CDP_API_KEY_NAME and CDP_PRIVATE_KEY:
+    credentials = base64.b64encode(f"{CDP_API_KEY_NAME}:{CDP_PRIVATE_KEY}".encode()).decode()
+    facilitator_url = "https://api.cdp.coinbase.com/platform/v2/x402"
+    facilitator = HTTPFacilitatorClient(FacilitatorConfig(url=facilitator_url))
+    # Monkey-patch auth header into session
+    import httpx
+    _orig_init = facilitator._client.__class__.__init__
+    original_transport = facilitator._client
+    original_transport.headers["Authorization"] = f"Basic {credentials}"
+else:
+    facilitator = HTTPFacilitatorClient(FacilitatorConfig(url="https://x402.org/facilitator"))
+
+server = x402ResourceServer(facilitator)
+server.register("eip155:8453", ExactEvmServerScheme())
+
+routes = {
+    "POST /name-agent": RouteConfig(
+        accepts=[
+            PaymentOption(
+                scheme="exact",
+                price="0.10",
+                network="eip155:8453",
+                pay_to=WALLET_ADDRESS,
+            )
+        ]
+    )
+}
+app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=server)
 
 # WUXING MAP
 WUXING_MAP = {
@@ -106,7 +136,6 @@ WORLD_PROMPTS = {
     "minimal":   "Clean, punchy single English word. Bold and memorable. Format: [NAME] only.",
 }
 
-# STATIC FILES
 @app.get("/")
 def root():
     return HTMLResponse(open("index.html").read())
@@ -126,9 +155,7 @@ def status():
         "features": ["wuxing", "zodiac", "yinyang", "world-lore"]
     }
 
-# x402 NAMING ENDPOINT
 @app.post("/name-agent")
-@pay("$0.10")
 async def name_agent(request: Request):
     body = await request.json()
     persona = body.get("persona", "")
@@ -200,7 +227,6 @@ Generate 3 destined names. Return ONLY valid JSON, no explanation, no markdown:
         "result": result
     })
 
-# ACP ENDPOINT (no x402)
 @app.post("/name-agent-acp")
 async def name_agent_acp(request: Request):
     body = await request.json()
