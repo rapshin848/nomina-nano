@@ -11,7 +11,6 @@ import os
 import json
 import base64
 import httpx
-import requests as req_sync
 from datetime import datetime
 
 app = FastAPI()
@@ -24,28 +23,25 @@ CDP_PRIVATE_KEY   = os.environ.get("CDP_API_KEY_PRIVATE_KEY")
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# CDP Auth Facilitator — sync get_supported, async verify/settle
+# Hardcoded supported response — bypasses CDP /supported auth issue
+class _Kind:
+    def __init__(self, scheme, network):
+        self.scheme = scheme
+        self.network = network
+
+class _Supported:
+    kinds = [_Kind("exact", "eip155:8453")]
+
 class CDPFacilitatorClient(HTTPFacilitatorClient):
-    def __init__(self, config: FacilitatorConfig, api_key_name: str, api_key_secret: str):
+    def __init__(self, config, api_key_name, api_key_secret):
         super().__init__(config)
         credentials = base64.b64encode(f"{api_key_name}:{api_key_secret}".encode()).decode()
         self._auth_header = f"Basic {credentials}"
         self._base_url = config.url
 
-    # SYNC — called by server_base.initialize()
-def get_supported(self):
-    # CDP /supported requires JWT — hardcode known Base mainnet support
-    class SupportedKind:
-        def __init__(self, scheme, network):
-            self.scheme = scheme
-            self.network = network
+    def get_supported(self):
+        return _Supported()
 
-    class SupportedResponse:
-        kinds = [SupportedKind("exact", "eip155:8453")]
-
-    return SupportedResponse()
-
-    # ASYNC — called during request handling
     async def verify(self, payload, requirements):
         async with httpx.AsyncClient() as client:
             resp = await client.post(
