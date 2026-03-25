@@ -30,7 +30,7 @@ routes = {
                 scheme="exact",
                 price="0.10",
                 network="eip155:8453",
-                pay_to=WALLET_ADDRESS,
+                pay_to=WALLET_ADDRESS or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6",
             )
         ]
     )
