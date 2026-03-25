@@ -1,4 +1,4 @@
 fastapi
 uvicorn
 anthropic
-x402[fastapi,evm]
+fastapi-x402
