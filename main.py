@@ -28,6 +28,7 @@ class _Kind:
     def __init__(self, scheme, network):
         self.scheme = scheme
         self.network = network
+        self.x402_version = 2
 
 class _Supported:
     kinds = [_Kind("exact", "eip155:8453")]
