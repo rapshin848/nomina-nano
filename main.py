@@ -20,8 +20,18 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 # x402 (Base Mainnet via CDP Facilitator)
+import base64
+
+CDP_API_KEY_ID     = os.environ.get("CDP_API_KEY_ID")
+CDP_API_KEY_SECRET = os.environ.get("CDP_API_KEY_SECRET")
+
+credentials = base64.b64encode(f"{CDP_API_KEY_ID}:{CDP_API_KEY_SECRET}".encode()).decode()
+
 facilitator = HTTPFacilitatorClient(
-    FacilitatorConfig(url="https://api.cdp.coinbase.com/platform/v2/x402")
+    FacilitatorConfig(
+        url="https://api.cdp.coinbase.com/platform/v2/x402",
+        extra_headers={"Authorization": f"Basic {credentials}"}
+    )
 )
 server = x402ResourceServer(facilitator)
 server.register("eip155:8453", ExactEvmServerScheme())
