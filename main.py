@@ -25,9 +25,17 @@ server.register("eip155:8453", ExactEvmServerScheme())
 
 routes = {
     "POST /name-agent": RouteConfig(
-        accepts=[PaymentOption(scheme="exact", price="$0.10", network="eip155:8453", pay_to=WALLET_ADDRESS)]
+        accepts=[
+            PaymentOption(
+                scheme="exact",
+                price="0.10",
+                network="eip155:8453",
+                pay_to=WALLET_ADDRESS,
+            )
+        ]
     )
 }
+
 app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=server)
 
 # ── 오행 매핑 ──────────────────────────────────────────────────────────────
