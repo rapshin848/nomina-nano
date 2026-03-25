@@ -285,14 +285,3 @@ Generate 3 destined names. Return ONLY valid JSON:
         },
         "result": result
     })
-```
-
----
-
-그리고 `requirements.txt` 도 업데이트 해주세요:
-```
-fastapi
-uvicorn
-anthropic
-x402[fastapi,evm]
-cdp-sdk
