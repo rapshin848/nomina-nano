@@ -1,11 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from x402.http.middleware.fastapi import PaymentMiddlewareASGI
-from x402.http import HTTPFacilitatorClient, FacilitatorConfig, PaymentOption
-from x402.http.types import RouteConfig
-from x402.server import x402ResourceServer
-from x402.mechanisms.evm.exact import ExactEvmServerScheme
+from fastapi_x402 import init_x402, pay
 import anthropic
 import os
 import json
@@ -19,36 +15,12 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# x402 (Base Mainnet via CDP Facilitator)
-import base64
-
-CDP_API_KEY_ID     = os.environ.get("CDP_API_KEY_ID")
-CDP_API_KEY_SECRET = os.environ.get("CDP_API_KEY_SECRET")
-
-credentials = base64.b64encode(f"{CDP_API_KEY_ID}:{CDP_API_KEY_SECRET}".encode()).decode()
-
-facilitator = HTTPFacilitatorClient(
-    FacilitatorConfig(
-        url="https://api.cdp.coinbase.com/platform/v2/x402",
-        extra_headers={"Authorization": f"Basic {credentials}"}
-    )
+# x402 (Base Mainnet — CDP 키는 환경변수에서 자동으로 읽음)
+init_x402(
+    app,
+    pay_to=WALLET_ADDRESS,
+    network="base"
 )
-server = x402ResourceServer(facilitator)
-server.register("eip155:8453", ExactEvmServerScheme())
-
-routes = {
-    "POST /name-agent": RouteConfig(
-        accepts=[
-            PaymentOption(
-                scheme="exact",
-                price="0.10",
-                network="eip155:8453",
-                pay_to=WALLET_ADDRESS,
-            )
-        ]
-    )
-}
-app.add_middleware(PaymentMiddlewareASGI, routes=routes, server=server)
 
 # WUXING MAP
 WUXING_MAP = {
@@ -156,6 +128,7 @@ def status():
 
 # x402 NAMING ENDPOINT
 @app.post("/name-agent")
+@pay("$0.10")
 async def name_agent(body: dict):
     persona = body.get("persona", "")
     purpose = body.get("purpose", "")
