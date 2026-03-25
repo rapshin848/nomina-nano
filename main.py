@@ -2,10 +2,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from x402.http.middleware.fastapi import PaymentMiddlewareASGI
-from x402.http import HTTPFacilitatorClient, FacilitatorConfig, PaymentOption
+from x402.http import PaymentOption
 from x402.http.types import RouteConfig
 from x402.server import x402ResourceServer
 from x402.mechanisms.evm.exact import ExactEvmServerScheme
+from x402.facilitators.cdp import CdpFacilitatorClient
 import anthropic
 import os
 import json
@@ -14,12 +15,18 @@ from datetime import datetime
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-WALLET_ADDRESS = os.environ.get("WALLET_ADDRESS")
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+WALLET_ADDRESS     = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
+ANTHROPIC_API_KEY  = os.environ.get("ANTHROPIC_API_KEY")
+CDP_API_KEY_ID     = os.environ.get("CDP_API_KEY_ID")
+CDP_API_KEY_SECRET = os.environ.get("CDP_API_KEY_SECRET")
+
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# ── x402 SDK ───────────────────────────────────────────────────────────────
-facilitator = HTTPFacilitatorClient(FacilitatorConfig(url="https://x402.org/facilitator"))
+# ── CDP Facilitator (Base Mainnet) ─────────────────────────────────────────
+facilitator = CdpFacilitatorClient(
+    api_key_id=CDP_API_KEY_ID,
+    api_key_secret=CDP_API_KEY_SECRET
+)
 server = x402ResourceServer(facilitator)
 server.register("eip155:8453", ExactEvmServerScheme())
 
@@ -30,7 +37,7 @@ routes = {
                 scheme="exact",
                 price="0.10",
                 network="eip155:8453",
-                pay_to=WALLET_ADDRESS or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6",
+                pay_to=WALLET_ADDRESS,
             )
         ]
     )
@@ -67,18 +74,18 @@ WUXING_MAP = {
 }
 
 ZODIAC_MAP = {
-    (1,20,2,18):   {"sign":"Aquarius",   "kr":"Aquarius",  "traits":"innovative, independent, future-oriented"},
-    (2,19,3,20):   {"sign":"Pisces",     "kr":"Pisces",    "traits":"intuitive, mysterious, deep insight"},
-    (3,21,4,19):   {"sign":"Aries",      "kr":"Aries",     "traits":"pioneering, bold, first mover"},
-    (4,20,5,20):   {"sign":"Taurus",     "kr":"Taurus",    "traits":"unbreakable will, trust, endurance"},
-    (5,21,6,20):   {"sign":"Gemini",     "kr":"Gemini",    "traits":"versatile, fast thinking, connector"},
-    (6,21,7,22):   {"sign":"Cancer",     "kr":"Cancer",    "traits":"protective, instinctive, deep memory"},
-    (7,23,8,22):   {"sign":"Leo",        "kr":"Leo",       "traits":"dominance, charisma, authority"},
-    (8,23,9,22):   {"sign":"Virgo",      "kr":"Virgo",     "traits":"precision, analytical, perfectionist"},
-    (9,23,10,22):  {"sign":"Libra",      "kr":"Libra",     "traits":"balance, justice, harmony"},
-    (10,23,11,21): {"sign":"Scorpio",    "kr":"Scorpio",   "traits":"transformation, depth, unbreakable"},
-    (11,22,12,21): {"sign":"Sagittarius","kr":"Sagittarius","traits":"exploration, freedom, infinite vision"},
-    (12,22,1,19):  {"sign":"Capricorn",  "kr":"Capricorn", "traits":"ambition, discipline, will to reach the top"},
+    (1,20,2,18):   {"sign":"Aquarius",    "traits":"innovative, independent, future-oriented"},
+    (2,19,3,20):   {"sign":"Pisces",      "traits":"intuitive, mysterious, deep insight"},
+    (3,21,4,19):   {"sign":"Aries",       "traits":"pioneering, bold, first mover"},
+    (4,20,5,20):   {"sign":"Taurus",      "traits":"unbreakable will, trust, endurance"},
+    (5,21,6,20):   {"sign":"Gemini",      "traits":"versatile, fast thinking, connector"},
+    (6,21,7,22):   {"sign":"Cancer",      "traits":"protective, instinctive, deep memory"},
+    (7,23,8,22):   {"sign":"Leo",         "traits":"dominance, charisma, authority"},
+    (8,23,9,22):   {"sign":"Virgo",       "traits":"precision, analytical, perfectionist"},
+    (9,23,10,22):  {"sign":"Libra",       "traits":"balance, justice, harmony"},
+    (10,23,11,21): {"sign":"Scorpio",     "traits":"transformation, depth, unbreakable"},
+    (11,22,12,21): {"sign":"Sagittarius", "traits":"exploration, freedom, infinite vision"},
+    (12,22,1,19):  {"sign":"Capricorn",   "traits":"ambition, discipline, will to reach the top"},
 }
 
 def get_zodiac(birth_str: str) -> dict:
@@ -88,7 +95,7 @@ def get_zodiac(birth_str: str) -> dict:
         for (m1,d1,m2,d2), data in ZODIAC_MAP.items():
             if (m == m1 and d >= d1) or (m == m2 and d <= d2):
                 return {**data, "birth": birth_str, "date": dt.strftime("%B %d, %Y")}
-        return {"sign":"Capricorn","kr":"Capricorn","traits":"ambition, discipline, will to reach the top","birth":birth_str,"date":dt.strftime("%B %d, %Y")}
+        return {"sign":"Capricorn","traits":"ambition, discipline, will to reach the top","birth":birth_str,"date":dt.strftime("%B %d, %Y")}
     except:
         return None
 
@@ -278,3 +285,14 @@ Generate 3 destined names. Return ONLY valid JSON:
         },
         "result": result
     })
+```
+
+---
+
+그리고 `requirements.txt` 도 업데이트 해주세요:
+```
+fastapi
+uvicorn
+anthropic
+x402[fastapi,evm]
+cdp-sdk
