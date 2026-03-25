@@ -10,33 +10,68 @@ import anthropic
 import os
 import json
 import base64
+import httpx
 from datetime import datetime
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-WALLET_ADDRESS     = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
-ANTHROPIC_API_KEY  = os.environ.get("ANTHROPIC_API_KEY")
-CDP_API_KEY_NAME   = os.environ.get("CDP_API_KEY_NAME")
-CDP_PRIVATE_KEY    = os.environ.get("CDP_API_KEY_PRIVATE_KEY")
+WALLET_ADDRESS    = os.environ.get("WALLET_ADDRESS") or "0x1CF120759186330A8F8344CC29DBDAe9bc3443b6"
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+CDP_API_KEY_NAME  = os.environ.get("CDP_API_KEY_NAME")
+CDP_PRIVATE_KEY   = os.environ.get("CDP_API_KEY_PRIVATE_KEY")
 
 claude = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-# x402 — CDP Facilitator (Base Mainnet)
+# CDP Auth Facilitator
+class CDPFacilitatorClient(HTTPFacilitatorClient):
+    def __init__(self, config: FacilitatorConfig, api_key_name: str, api_key_secret: str):
+        super().__init__(config)
+        credentials = base64.b64encode(f"{api_key_name}:{api_key_secret}".encode()).decode()
+        self._auth_header = f"Basic {credentials}"
+
+    async def verify(self, payload, requirements):
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{self._config.url}/verify",
+                json={"paymentPayload": payload, "paymentRequirements": requirements},
+                headers={"Content-Type": "application/json", "Authorization": self._auth_header},
+                timeout=10,
+            )
+            return resp.json()
+
+    async def settle(self, payload, requirements):
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{self._config.url}/settle",
+                json={"paymentPayload": payload, "paymentRequirements": requirements},
+                headers={"Content-Type": "application/json", "Authorization": self._auth_header},
+                timeout=10,
+            )
+            return resp.json()
+
+    async def get_supported(self):
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                f"{self._config.url}/supported",
+                headers={"Authorization": self._auth_header},
+                timeout=10,
+            )
+            return resp.json()
+
 if CDP_API_KEY_NAME and CDP_PRIVATE_KEY:
-    credentials = base64.b64encode(f"{CDP_API_KEY_NAME}:{CDP_PRIVATE_KEY}".encode()).decode()
-    facilitator_url = "https://api.cdp.coinbase.com/platform/v2/x402"
-    facilitator = HTTPFacilitatorClient(FacilitatorConfig(url=facilitator_url))
-    # Monkey-patch auth header into session
-    import httpx
-    _orig_init = facilitator._client.__class__.__init__
-    original_transport = facilitator._client
-    original_transport.headers["Authorization"] = f"Basic {credentials}"
+    facilitator = CDPFacilitatorClient(
+        FacilitatorConfig(url="https://api.cdp.coinbase.com/platform/v2/x402"),
+        api_key_name=CDP_API_KEY_NAME,
+        api_key_secret=CDP_PRIVATE_KEY,
+    )
+    NETWORK = "eip155:8453"
 else:
     facilitator = HTTPFacilitatorClient(FacilitatorConfig(url="https://x402.org/facilitator"))
+    NETWORK = "eip155:84532"
 
 server = x402ResourceServer(facilitator)
-server.register("eip155:8453", ExactEvmServerScheme())
+server.register(NETWORK, ExactEvmServerScheme())
 
 routes = {
     "POST /name-agent": RouteConfig(
@@ -44,7 +79,7 @@ routes = {
             PaymentOption(
                 scheme="exact",
                 price="0.10",
-                network="eip155:8453",
+                network=NETWORK,
                 pay_to=WALLET_ADDRESS,
             )
         ]
@@ -151,13 +186,15 @@ def status():
         "version": "5.0",
         "status": "online",
         "price": "$0.10 USDC",
+        "network": NETWORK,
         "worlds": list(WORLD_PROMPTS.keys()),
-        "features": ["wuxing", "zodiac", "yinyang", "world-lore"]
     }
 
 @app.post("/name-agent")
 async def name_agent(request: Request):
-    body = await request.json()
+    raw_body = await request.body()
+    body = json.loads(raw_body) if raw_body else {}
+
     persona = body.get("persona", "")
     purpose = body.get("purpose", "")
     style   = body.get("style", "")
@@ -229,7 +266,9 @@ Generate 3 destined names. Return ONLY valid JSON, no explanation, no markdown:
 
 @app.post("/name-agent-acp")
 async def name_agent_acp(request: Request):
-    body = await request.json()
+    raw_body = await request.body()
+    body = json.loads(raw_body) if raw_body else {}
+
     persona = body.get("persona", "")
     purpose = body.get("purpose", "")
     style   = body.get("style", "")
